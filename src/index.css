@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'JetBrains Mono', 'Courier Prime', monospace;
+  }
+}
+
+.font-dotmatrix {
+  font-family: 'JetBrains Mono', 'Courier Prime', monospace;
+}
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .payslip-container {
+    box-shadow: none !important;
+    border: 1px dashed #334155 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12px !important;
+  }
+
+  input, select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    padding: 0 !important;
+  }
+}
+

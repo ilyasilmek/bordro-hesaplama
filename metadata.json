@@ -1,0 +1,6 @@
+{
+  "name": "TCDD Bordro Düzenleyici",
+  "description": "TCDD Taşımacılık A.Ş. işçi aylığı maaş bordrosu düzenleyici, interaktif hesaplama ve TİS simülasyonu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
