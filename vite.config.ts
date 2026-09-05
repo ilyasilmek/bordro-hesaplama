@@ -6,23 +6,35 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: '/',
     plugins: [
       react(),
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
+        injectRegister: null,
+        includeAssets: [
+          'favicon.ico',
+          'apple-touch-icon.png',
+          'icon.svg',
+          'pwa-192x192.png',
+          'pwa-512x512.png',
+          'pwa-maskable-512x512.png',
+        ],
         manifest: {
           id: '/',
           name: 'TCDD Bordro Düzenleyici',
           short_name: 'TCDD Bordro',
           description: 'TCDD Taşımacılık A.Ş. işçi aylığı maaş bordrosu düzenleyici, interaktif hesaplama ve TİS simülasyonu.',
+          lang: 'tr',
+          dir: 'ltr',
           theme_color: '#0f172a',
           background_color: '#f8fafc',
           display: 'standalone',
+          orientation: 'any',
           start_url: '/',
           scope: '/',
+          categories: ['finance', 'productivity', 'utilities'],
           icons: [
             {
               src: '/pwa-192x192.png',

@@ -9,8 +9,16 @@ export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [isInIframe, setIsInIframe] = useState(false);
 
   useEffect(() => {
+    // Detect iframe environment (AI Studio preview iframe blocks PWA install prompt)
+    try {
+      setIsInIframe(window.self !== window.top);
+    } catch {
+      setIsInIframe(true);
+    }
+
     // Detect standalone mode (already installed)
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
@@ -22,8 +30,14 @@ export function usePWAInstall() {
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
     setIsIOS(isIOSDevice);
 
+    // Pick up early prompt if already captured before React mounted
+    if ((window as unknown as { __deferredPrompt?: BeforeInstallPromptEvent }).__deferredPrompt) {
+      setDeferredPrompt((window as unknown as { __deferredPrompt: BeforeInstallPromptEvent }).__deferredPrompt);
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
+      (window as unknown as { __deferredPrompt?: Event }).__deferredPrompt = e;
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
@@ -53,10 +67,16 @@ export function usePWAInstall() {
     return false;
   };
 
+  const openInNewTab = () => {
+    window.open(window.location.href, '_blank', 'noopener,noreferrer');
+  };
+
   return {
     isInstallable: !!deferredPrompt,
     isInstalled,
     isIOS,
+    isInIframe,
     install,
+    openInNewTab,
   };
 }
