@@ -11,6 +11,7 @@ import { EarningsAndDeductionsSection } from './components/EarningsAndDeductions
 import { StatutorySection } from './components/StatutorySection';
 import { ZamModal } from './components/ZamModal';
 import { SavedBordrolarModal } from './components/SavedBordrolarModal';
+import { OfflineIndicator } from './components/OfflineIndicator';
 
 export function App() {
   const [bordro, setBordro] = useState<BordroData>(() => calculateBordro(DEFAULT_TCDD_BORDRO));
@@ -246,6 +247,9 @@ export function App() {
         currentBordro={bordro}
         onLoadBordro={loaded => setBordro(calculateBordro(loaded))}
       />
+
+      {/* PWA Offline Connectivity Indicator */}
+      <OfflineIndicator />
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { BordroData } from '../types';
 import { MONTHS_TABLE } from '../utils/bordroEngine';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderControlsProps {
   bordro: BordroData;
@@ -237,6 +238,8 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             <Printer className="w-3.5 h-3.5" />
             Yazdır / PDF
           </button>
+
+          <PWAInstallButton />
         </div>
       </header>
 
