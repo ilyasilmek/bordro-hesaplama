@@ -372,7 +372,19 @@ export const TcddRetroBordro: React.FC<TcddRetroBordroProps> = ({ onNavigateToRe
                   {fmtHours(currentSlip.pazarBayramHours || currentSlip.haftaTatiliHours)}
                 </span>
                 <span className="font-bold">{fmtMoney(currentSlip.pazarBayramAmount || currentSlip.haftaTatiliAmount)}</span>
-                <span className="border-l border-dashed border-current/30 pl-2">
+                <span
+                  className="border-l border-dashed border-current/30 pl-2 hover:bg-amber-400/20 cursor-pointer rounded transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveTooltip({
+                      title: 'Sendika Aidatı (TİS Madde 18 & GVK 63/4)',
+                      tisCode: '31. Dönem TİS Madde 18',
+                      text: 'Sendika üyesi personelden aylık 1 günlük yevmiye çıplak ücreti tutarında kesilir. TCDD uygulamasında 6,20 saat x (Saat Ücreti + Emek Zammı) olarak hesaplanır ve GVK 63/4 uyarınca Gelir Vergisi matrahından tenzil edilir.',
+                      calcDetails: `6,20 saat x (${currentSlip.saatUcr.toFixed(2)} + ${currentSlip.emkZam.toFixed(2)} TL) = ${fmtMoney(currentSlip.sendikaAidaAmount)} TL`,
+                    });
+                  }}
+                  title="31. Dönem TİS Md. 18: 6,20 x (Saat Ücr + Emek Zam)"
+                >
                   |Sendika Aida: {fmtMoney(currentSlip.sendikaAidaAmount)}
                 </span>
               </div>

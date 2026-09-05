@@ -139,9 +139,9 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                           </span>
                           <span
                             className="no-print text-[8.5px] text-sky-800 bg-sky-100/90 px-1.5 py-0.2 rounded border border-sky-200 font-semibold"
-                            title="TİS Postabaşılık saat ücreti 5,28 TL baz alınır"
+                            title={`TİS Postabaşılık saat ücreti ${formatCurrency(bordro.postabasiSaatUcreti ?? 4.84)} TL baz alınır (Zam uygulandığında oransal artar)`}
                           >
-                            5,28 ₺/saat
+                            {formatCurrency(bordro.postabasiSaatUcreti ?? 4.84)} ₺/saat
                           </span>
                         </div>
                       ) : (
@@ -168,9 +168,9 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       ) : isPostabasi ? (
                         <span
                           className="no-print text-[8px] bg-sky-100 text-sky-900 px-1.5 py-0.2 rounded font-semibold border border-sky-300"
-                          title="TİS Postabaşılık Saati (Saat x 5,28 TL)"
+                          title={`TİS Postabaşılık Saati: Saat x ${formatCurrency(bordro.postabasiSaatUcreti ?? 4.84)} TL`}
                         >
-                          5.28 ₺
+                          {formatCurrency(bordro.postabasiSaatUcreti ?? 4.84)} ₺
                         </span>
                       ) : (
                         <span
@@ -251,14 +251,36 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
 
             {/* Sendika Aidatı */}
             <div className="flex items-center justify-between gap-1.5">
-              <div className="flex items-center flex-1 min-w-0 pr-1">
+              <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
                 <label
                   className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap"
                   htmlFor="kesSendika"
-                  title="Sendika Aidatı"
+                  title="31. Dönem TİS Madde 18 & GVK 63/4: Sendika üyesi personelden aylık 1 günlük yevmiye [6,20 saat x (Saat Ücreti + Emek Zammı)] çıplak ücreti tutarında kesilir ve Gelir Vergisi matrahından tenzil edilir."
                 >
                   Sendika Aidatı
                 </label>
+                <div className="no-print flex items-center gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const tisAmount = Math.round(6.20 * (bordro.saatUcr + bordro.emkZam) * 100) / 100;
+                      onChange({ sendikaAidati: tisAmount, sendikaAidatiModu: 'oto' });
+                    }}
+                    className={`text-[8.5px] px-1.5 py-0.2 rounded border font-bold cursor-pointer transition ${
+                      bordro.sendikaAidatiModu !== 'manuel'
+                        ? 'bg-purple-100 text-purple-900 border-purple-300 shadow-2xs'
+                        : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-purple-50'
+                    }`}
+                    title="31. Dönem TİS Md. 18 formülü ile otomatik hesapla: 6,20 × (Saat Ücreti + Emek Zammı)"
+                  >
+                    TİS 6,20x {bordro.sendikaAidatiModu !== 'manuel' ? '(OTO)' : ''}
+                  </button>
+                  {bordro.sendikaAidatiModu === 'manuel' && (
+                    <span className="text-[8px] bg-amber-100 text-amber-900 border border-amber-300 px-1 py-0.2 rounded font-semibold">
+                      MANUEL
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex items-center w-28 sm:w-32 2xl:w-36 shrink-0">
                 <span className="mr-1 text-slate-500 font-bold">:</span>
@@ -268,8 +290,16 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesSendika"
                   type="text"
                   defaultValue={formatCurrency(bordro.sendikaAidati)}
-                  onBlur={e => onChange({ sendikaAidati: parseCurrency(e.target.value) })}
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                  onBlur={e => {
+                    const parsed = parseCurrency(e.target.value);
+                    const tisAmount = Math.round(6.20 * (bordro.saatUcr + bordro.emkZam) * 100) / 100;
+                    onChange({
+                      sendikaAidati: parsed,
+                      sendikaAidatiModu: Math.abs(parsed - tisAmount) < 0.01 ? 'oto' : 'manuel'
+                    });
+                  }}
+                  title="Sendika Aidatı (TİS Md. 18 & GVK 63/4 uyarınca Gelir Vergisi matrahından tenzil edilir)"
+                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500 font-mono"
                 />
               </div>
             </div>

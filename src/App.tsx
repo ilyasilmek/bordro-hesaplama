@@ -98,6 +98,7 @@ export function App() {
       const newIase = prev.iaseGunlukKatsayi * effectiveMultiplier;
       const newHizmet = prev.hizmetYillikKatsayi * effectiveMultiplier;
       const newSosyal = prev.birlestirilmSosyalYardim * effectiveMultiplier;
+      const newPostabasi = (prev.postabasiSaatUcreti ?? 4.84) * effectiveMultiplier;
       const newSendika = prev.sendikaAidati * effectiveMultiplier;
 
       return calculateBordro({
@@ -107,6 +108,7 @@ export function App() {
         iaseGunlukKatsayi: newIase,
         hizmetYillikKatsayi: newHizmet,
         birlestirilmSosyalYardim: newSosyal,
+        postabasiSaatUcreti: newPostabasi,
         sendikaAidati: newSendika
       });
     });

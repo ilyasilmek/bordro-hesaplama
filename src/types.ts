@@ -256,7 +256,9 @@ export interface BordroData {
   imzaNot: string;
   earnings: EarningItem[];
   birlestirilmSosyalYardim: number;
+  postabasiSaatUcreti?: number;
   sendikaAidati: number;
+  sendikaAidatiModu?: 'oto' | 'manuel';
   sporAidati: number;
   vergiMuafiyeti: number;
   terfiFarki: number;

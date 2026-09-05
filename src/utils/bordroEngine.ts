@@ -76,7 +76,8 @@ export function calculateEarningItem(
   saatUcr: number,
   emkZam: number,
   iaseKatsayi: number,
-  hizmetKatsayi: number
+  hizmetKatsayi: number,
+  postabasiKatsayi: number = 4.84
 ): number {
   if (item.hours <= 0) return 0;
   const totalBase = saatUcr + emkZam > 0 ? saatUcr + emkZam : saatUcr;
@@ -95,7 +96,7 @@ export function calculateEarningItem(
     case 'mesai175':
       return item.hours * totalBase * 1.75;
     case 'postabasi':
-      return item.hours * 5.28;
+      return item.hours * postabasiKatsayi;
     case 'gms24':
       return item.hours * totalBase * 0.24;
     case 'iase':
@@ -111,6 +112,8 @@ export function calculateEarningItem(
 
 export function calculateBordro(bordro: BordroData): BordroData {
   const isNormal = bordro.calisanStatusu === 'normal';
+  const postabasiKatsayi = bordro.postabasiSaatUcreti ?? 4.84;
+  const postabasiBadge = `${postabasiKatsayi.toFixed(2).replace('.', ',')} ₺`;
 
   // Ensure 'postabasi' item exists right after 'ui'
   const rawEarnings = bordro.earnings ? [...bordro.earnings] : [];
@@ -122,7 +125,7 @@ export function calculateBordro(bordro: BordroData): BordroData {
       hours: 0,
       amount: 0,
       rule: 'postabasi',
-      badge: '5,28 ₺'
+      badge: postabasiBadge
     };
     if (uiIndex !== -1) {
       rawEarnings.splice(uiIndex + 1, 0, postabasiItem);
@@ -138,7 +141,22 @@ export function calculateBordro(bordro: BordroData): BordroData {
     }
     // Gazi çalışanında Postabaşılık Saati yoktur
     if (!isNormal && item.id === 'postabasi') {
-      return { ...item, hours: 0, amount: 0 };
+      return { ...item, hours: 0, amount: 0, badge: postabasiBadge };
+    }
+    // Postabaşılık Saati için dinamik rozet
+    if (item.id === 'postabasi') {
+      return {
+        ...item,
+        badge: postabasiBadge,
+        amount: calculateEarningItem(
+          item,
+          bordro.saatUcr,
+          bordro.emkZam,
+          bordro.iaseGunlukKatsayi ?? 301.1575,
+          bordro.hizmetYillikKatsayi ?? 24.67,
+          postabasiKatsayi
+        )
+      };
     }
     // Gazi çalışanında FM %75 yoktur, sadece standart Fzl Mes %100 vardır
     if (!isNormal && (item.id === 'fm' || item.rule === 'mesai175')) {
@@ -155,7 +173,8 @@ export function calculateBordro(bordro: BordroData): BordroData {
           bordro.saatUcr,
           bordro.emkZam,
           bordro.iaseGunlukKatsayi ?? 301.1575,
-          bordro.hizmetYillikKatsayi ?? 24.67
+          bordro.hizmetYillikKatsayi ?? 24.67,
+          postabasiKatsayi
         )
       };
     }
@@ -166,7 +185,8 @@ export function calculateBordro(bordro: BordroData): BordroData {
         bordro.saatUcr,
         bordro.emkZam,
         bordro.iaseGunlukKatsayi ?? 301.1575,
-        bordro.hizmetYillikKatsayi ?? 24.67
+        bordro.hizmetYillikKatsayi ?? 24.67,
+        postabasiKatsayi
       )
     };
   });
@@ -214,15 +234,24 @@ export function calculateBordro(bordro: BordroData): BordroData {
   const issSigIsc = sskMatrahi * issSigIscOrani;
   const issSigIsv = sskMatrahi * issSigIsvOrani;
 
+  // 31. Dönem TİS Madde 18 & GVK 63/4 Sendika Aidatı:
+  // Demiryol-İş TİS uyarınca sendika üyesi personelden aylık 1 günlük yevmiye çıplak ücret:
+  // TCDD bordrolarında: 6,20 saat x (Saat Ücreti + Emek Zammı)
+  const tisSendikaHesaplanan = Math.round(6.20 * (bordro.saatUcr + bordro.emkZam) * 100) / 100;
+  const sendikaAidati =
+    bordro.sendikaAidatiModu === 'manuel'
+      ? (bordro.sendikaAidati ?? tisSendikaHesaplanan)
+      : tisSendikaHesaplanan;
+
   // SSK Matrah Düzeltmesinin vergiye etkisi yoktur. Sadece SSK primlerini etkiler, vergide hesaba katılmaz.
-  // Aylık Gelir Vergisi Matrahı cari ayın brüt geliri üzerinden yasal kesintiler ve sendika aidatı düşülerek hesaplanır:
+  // Aylık Gelir Vergisi Matrahı cari ayın brüt geliri üzerinden yasal kesintiler ve sendika aidatı düşülerek hesaplanır (GVK 63/4):
   const baseSskPrimIsci = baseSskMatrahi * sskPrimIsciOrani;
   const baseIssSigIsc = baseSskMatrahi * issSigIscOrani;
   const vergiMuafiyeti = isNormal ? 0 : Math.abs(bordro.vergiMuafiyeti || 0);
 
   const aylikGlrVM = Math.max(
     0,
-    baseSskMatrahi - baseSskPrimIsci - baseIssSigIsc - Math.abs(bordro.sendikaAidati) - vergiMuafiyeti
+    baseSskMatrahi - baseSskPrimIsci - baseIssSigIsc - Math.abs(sendikaAidati) - vergiMuafiyeti
   );
 
   let gelirVergisi = 0;
@@ -253,7 +282,7 @@ export function calculateBordro(bordro: BordroData): BordroData {
   );
 
   const kesintiTopl =
-    Math.abs(bordro.sendikaAidati) +
+    Math.abs(sendikaAidati) +
     Math.abs(bordro.sporAidati) +
     Math.abs(bordro.mahsupKesintisi) +
     customDeductionsSum +
@@ -266,6 +295,9 @@ export function calculateBordro(bordro: BordroData): BordroData {
 
   return {
     ...bordro,
+    postabasiSaatUcreti: postabasiKatsayi,
+    sendikaAidati,
+    sendikaAidatiModu: bordro.sendikaAidatiModu || 'oto',
     earnings,
     sskMatrahi,
     sskPrimIsci,
@@ -309,7 +341,7 @@ export const SAMPLE_AUGUST_2026_BORDRO: BordroData = {
     { id: "ht", label: "Hafta Tatili", hours: 30, amount: 12150.90, rule: "base", badge: "OTO" },
     { id: "ubgt", label: "UBGT", hours: 9, amount: 3645.27, rule: "base", badge: "OTO" },
     { id: "ui", label: "Ücretli İzin", hours: 64, amount: 25921.92, rule: "base", badge: "OTO" },
-    { id: "postabasi", label: "Postabaşılık Saati", hours: 0, amount: 0, rule: "postabasi", badge: "5,28 ₺" },
+    { id: "postabasi", label: "Postabaşılık Saati", hours: 0, amount: 0, rule: "postabasi", badge: "4,84 ₺" },
     { id: "ur", label: "Ücretli Rapor", hours: 72, amount: 29162.16, rule: "base", badge: "OTO" },
     { id: "vp", label: "Vardiya Prim", hours: 0, amount: 0, rule: "vardiya10", badge: "OTO" },
     { id: "gc", label: "Gece Çalışma", hours: 0, amount: 0, rule: "gece15", badge: "OTO" },
@@ -320,7 +352,9 @@ export const SAMPLE_AUGUST_2026_BORDRO: BordroData = {
     { id: "gms", label: "GMŞ%(17+7)24", hours: 155, amount: 15067.12, rule: "gms24", badge: "OTO" }
   ],
   birlestirilmSosyalYardim: 5089.70,
+  postabasiSaatUcreti: 4.84,
   sendikaAidati: 2511.19,
+  sendikaAidatiModu: "oto",
   sporAidati: 10,
   vergiMuafiyeti: 3000,
   terfiFarki: 8684.57,
@@ -378,7 +412,7 @@ export const DEFAULT_TCDD_BORDRO: BordroData = {
     { id: "ht", label: "Hafta Tatili", hours: 0, amount: 0, rule: "base", badge: "OTO" },
     { id: "ubgt", label: "UBGT", hours: 0, amount: 0, rule: "base", badge: "OTO" },
     { id: "ui", label: "Ücretli İzin", hours: 0, amount: 0, rule: "base", badge: "OTO" },
-    { id: "postabasi", label: "Postabaşılık Saati", hours: 0, amount: 0, rule: "postabasi", badge: "5,28 ₺" },
+    { id: "postabasi", label: "Postabaşılık Saati", hours: 0, amount: 0, rule: "postabasi", badge: "4,84 ₺" },
     { id: "ur", label: "Ücretli Rapor", hours: 0, amount: 0, rule: "base", badge: "OTO" },
     { id: "vp", label: "Vardiya Prim", hours: 0, amount: 0, rule: "vardiya10", badge: "OTO" },
     { id: "gc", label: "Gece Çalışma", hours: 0, amount: 0, rule: "gece15", badge: "OTO" },
@@ -389,7 +423,9 @@ export const DEFAULT_TCDD_BORDRO: BordroData = {
     { id: "gms", label: "GMŞ%(17+7)24", hours: 0, amount: 0, rule: "gms24", badge: "OTO" }
   ],
   birlestirilmSosyalYardim: 5089.70,
+  postabasiSaatUcreti: 4.84,
   sendikaAidati: 2511.19,
+  sendikaAidatiModu: "oto",
   sporAidati: 10,
   vergiMuafiyeti: 3000,
   terfiFarki: 0,

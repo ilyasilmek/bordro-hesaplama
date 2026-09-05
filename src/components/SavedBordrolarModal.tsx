@@ -136,6 +136,7 @@ export const SavedBordrolarModal: React.FC<SavedBordrolarModalProps> = ({
       copy.iaseGunlukKatsayi = copy.iaseGunlukKatsayi * 1.2;
       copy.hizmetYillikKatsayi = copy.hizmetYillikKatsayi * 1.2;
       copy.birlestirilmSosyalYardim = copy.birlestirilmSosyalYardim * 1.2;
+      copy.postabasiSaatUcreti = (copy.postabasiSaatUcreti ?? 4.84) * 1.2;
       copy.sendikaAidati = copy.sendikaAidati * 1.2;
       onLoadBordro(copy);
       onClose();
