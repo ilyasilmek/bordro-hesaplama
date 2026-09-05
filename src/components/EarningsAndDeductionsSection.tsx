@@ -253,6 +253,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       title={`${earning.label} Süresi (${earning.unitLabel || 'Saat'}) - Tab tuşuyla alt satıra geçer`}
                       type="text"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       placeholder="0,00"
                       defaultValue={earning.hours > 0 ? formatCurrency(earning.hours) : ''}
                       onKeyDown={e => handleHourKeyDown(e, index)}
@@ -268,6 +269,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       title={`${earning.label} Tutarı (Otomatik veya Manuel Düzenlenebilir)`}
                       type="text"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       placeholder="0,00"
                       defaultValue={earning.amount > 0 ? formatCurrency(earning.amount) : ''}
                       onFocus={e => e.target.select()}
@@ -322,6 +324,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesBirlestirilm"
                   type="text"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0,00"
                   defaultValue={bordro.birlestirilmSosyalYardim > 0 ? formatCurrency(bordro.birlestirilmSosyalYardim) : ''}
                   onFocus={e => e.target.select()}
@@ -373,6 +376,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesSendika"
                   type="text"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0,00"
                   defaultValue={bordro.sendikaAidati > 0 ? formatCurrency(bordro.sendikaAidati) : ''}
                   onFocus={e => e.target.select()}
@@ -410,6 +414,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesSpor"
                   type="text"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0,00"
                   defaultValue={bordro.sporAidati > 0 ? formatCurrency(bordro.sporAidati) : ''}
                   onFocus={e => e.target.select()}
@@ -447,6 +452,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       name="kesVergidenMua"
                       type="text"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       placeholder="0,00"
                       defaultValue={bordro.vergiMuafiyeti > 0 ? formatCurrency(bordro.vergiMuafiyeti) : ''}
                       onFocus={e => e.target.select()}
@@ -531,6 +537,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesTerfiFarki"
                   type="text"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0,00"
                   defaultValue={bordro.terfiFarki > 0 ? formatCurrency(bordro.terfiFarki) : ''}
                   onFocus={e => e.target.select()}
@@ -560,6 +567,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesMahsup"
                   type="text"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0,00"
                   defaultValue={bordro.mahsupKesintisi > 0 ? formatCurrency(bordro.mahsupKesintisi) : ''}
                   onFocus={e => e.target.select()}
@@ -595,6 +603,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   name="kesSskMatrahD"
                   type="text"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   placeholder="0,00"
                   defaultValue={bordro.sskMatrahD > 0 ? formatCurrency(bordro.sskMatrahD) : ''}
                   onFocus={e => e.target.select()}
@@ -632,6 +641,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                     key={`custom-ded-${item.id}-${item.amount}`}
                     type="text"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     defaultValue={formatCurrency(item.amount)}
                     onFocus={e => e.target.select()}
                     onClick={e => (e.target as HTMLInputElement).select()}
@@ -660,6 +670,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
               <input
                 type="text"
                 inputMode="decimal"
+                pattern="[0-9]*[.,]?[0-9]*"
                 placeholder="Tutar"
                 value={newDedAmount}
                 onChange={e => setNewDedAmount(e.target.value)}

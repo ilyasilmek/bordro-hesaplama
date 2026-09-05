@@ -67,6 +67,7 @@ export const RetroactiveDifference: React.FC<RetroactiveDifferenceProps> = ({
             <input
               type="number"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               step="10"
               value={oldDailyWage}
               onChange={(e) => setOldDailyWage(parseFloat(e.target.value) || 0)}
@@ -84,6 +85,7 @@ export const RetroactiveDifference: React.FC<RetroactiveDifferenceProps> = ({
             <input
               type="number"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               step="10"
               value={newDailyWage}
               onChange={(e) => setNewDailyWage(parseFloat(e.target.value) || 0)}

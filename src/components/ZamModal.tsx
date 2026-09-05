@@ -68,6 +68,7 @@ export const ZamModal: React.FC<ZamModalProps> = ({
                 id="modal-zam-orani"
                 type="text"
                 inputMode="decimal"
+                pattern="[0-9]*[.,]?[0-9]*"
                 value={rateStr}
                 onChange={e => setRateStr(e.target.value)}
                 onFocus={e => e.target.select()}
@@ -115,6 +116,7 @@ export const ZamModal: React.FC<ZamModalProps> = ({
                     id="modal-eski-gun"
                     type="text"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     value={oldDaysStr}
                     onChange={e => setOldDaysStr(e.target.value)}
                     onFocus={e => e.target.select()}
@@ -130,6 +132,7 @@ export const ZamModal: React.FC<ZamModalProps> = ({
                     id="modal-yeni-gun"
                     type="text"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     value={newDaysStr}
                     onChange={e => setNewDaysStr(e.target.value)}
                     onFocus={e => e.target.select()}

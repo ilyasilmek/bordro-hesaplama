@@ -120,6 +120,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="kidemYili"
               type="number"
               inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="0"
               value={bordro.kidemYili || ''}
               onChange={e => onChange({ kidemYili: parseInt(e.target.value, 10) || 0 })}
@@ -137,6 +138,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="hzmZammiYil"
               type="number"
               inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="0"
               value={bordro.hzmZammiYil || ''}
               onChange={e => {
@@ -174,6 +176,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="saatUcr"
               type="text"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               placeholder="0,000000"
               defaultValue={bordro.saatUcr > 0 ? formatCurrency(bordro.saatUcr, 6) : ''}
               onBlur={e => handleSaatUcrBlur(e.target.value)}
@@ -197,6 +200,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="emkZam"
               type="text"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               placeholder="0,000000"
               defaultValue={bordro.emkZam > 0 ? formatCurrency(bordro.emkZam, 6) : ''}
               onBlur={e => handleEmkZamBlur(e.target.value)}
@@ -220,6 +224,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="brtAylk"
               type="text"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               placeholder="0,00"
               defaultValue={bordro.brtAylk > 0 ? formatCurrency(bordro.brtAylk) : ''}
               onBlur={e => onChange({ brtAylk: parseCurrency(e.target.value) })}
@@ -243,6 +248,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="kdmZam"
               type="text"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               placeholder="0,00"
               defaultValue={bordro.kdmZam > 0 ? formatCurrency(bordro.kdmZam) : ''}
               onBlur={e => onChange({ kdmZam: parseCurrency(e.target.value) })}
@@ -266,6 +272,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               name="hastGun"
               type="text"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               placeholder="0"
               defaultValue={bordro.hastGun > 0 ? formatCurrency(bordro.hastGun) : ''}
               onBlur={e => onChange({ hastGun: parseCurrency(e.target.value) })}

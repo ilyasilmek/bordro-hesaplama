@@ -64,6 +64,7 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               name="sskGunu"
               type="text"
               inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               placeholder="0"
               defaultValue={bordro.sskGunu > 0 ? formatCurrency(bordro.sskGunu) : ''}
               onFocus={e => e.target.select()}
