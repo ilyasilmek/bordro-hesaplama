@@ -10,6 +10,24 @@
   font-family: 'JetBrains Mono', 'Courier Prime', monospace;
 }
 
+/* Yüksek Belirginlikte Input Odaklanma (Focus) Efekti */
+input:not([readonly]):focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2.5px rgba(37, 99, 235, 0.35), 0 2px 4px 0 rgba(15, 23, 42, 0.1) !important;
+  background-color: #ffffff !important;
+  position: relative;
+  z-index: 20;
+  transition: all 0.12s ease-in-out;
+}
+
+input[readonly]:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25) !important;
+}
+
 @media print {
   @page {
     size: A4 landscape;

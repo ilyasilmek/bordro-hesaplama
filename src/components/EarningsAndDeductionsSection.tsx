@@ -127,9 +127,17 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
               const isEngelli = bordro.calisanStatusu === 'engelli';
               const isFmItem = earning.id === 'fm' || earning.rule === 'mesai175' || earning.rule === 'mesai200';
               const isPostabasi = earning.id === 'postabasi' || earning.rule === 'postabasi';
+              const isEven = index % 2 === 0;
 
               return (
-                <div key={earning.id} className="flex flex-col gap-0.5">
+                <div
+                  key={earning.id}
+                  className={`p-1.5 rounded transition-all border ${
+                    isEven
+                      ? 'bg-white/95 border-emerald-200/90 shadow-2xs'
+                      : 'bg-emerald-50/70 border-emerald-100/80'
+                  } hover:border-emerald-400 hover:shadow-xs flex flex-col gap-1`}
+                >
                   <div className="flex justify-between items-center">
                     {isFmItem ? (
                       <div className="flex items-center gap-1 min-w-0">
@@ -249,7 +257,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       onKeyDown={e => handleHourKeyDown(e, index)}
                       onFocus={e => e.target.select()}
                       onBlur={e => onHourChange(earning.id, parseCurrency(e.target.value))}
-                      className="col-span-5 text-xs text-right bg-white/95 border border-emerald-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 font-mono"
+                      className="col-span-5 text-xs text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:bg-white font-mono font-semibold transition-all shadow-2xs"
                     />
                     <input
                       key={`amount-${earning.id}-${earning.amount}`}
@@ -265,7 +273,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                           onAmountChange(earning.id, parseCurrency(e.target.value));
                         }
                       }}
-                      className="col-span-7 text-xs font-bold text-right bg-emerald-100/50 text-emerald-950 border border-emerald-200/90 rounded px-1.5 py-0.5 font-mono focus:bg-white focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500"
+                      className="col-span-7 text-xs font-bold text-right bg-emerald-100/60 text-emerald-950 border border-emerald-300/90 rounded px-1.5 py-0.5 font-mono focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 transition-all shadow-2xs"
                     />
                   </div>
                 </div>
@@ -286,10 +294,10 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
             </div>
 
             {/* Birleştirilmiş Sosyal Yardım */}
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded border bg-white/95 border-amber-200/90 shadow-2xs hover:border-amber-400 transition-all">
               <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
                 <label
-                  className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap"
+                  className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap cursor-pointer"
                   htmlFor="kesBirlestirilm"
                   title="Birleştirilmiş Sosyal Yardım (Gelir Kalemi)"
                 >
@@ -313,16 +321,16 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   defaultValue={bordro.birlestirilmSosyalYardim > 0 ? formatCurrency(bordro.birlestirilmSosyalYardim) : ''}
                   onFocus={e => e.target.select()}
                   onBlur={e => onChange({ birlestirilmSosyalYardim: parseCurrency(e.target.value) })}
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                  className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Sendika Aidatı */}
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded border bg-amber-50/70 border-amber-100/80 hover:border-amber-400 transition-all">
               <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
                 <label
-                  className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap"
+                  className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap cursor-pointer"
                   htmlFor="kesSendika"
                   title="31. Dönem TİS Madde 18 & GVK 63/4: Sendika üyesi personelden aylık 1 günlük yevmiye [6,20 saat x (Saat Ücreti + Emek Zammı)] çıplak ücreti tutarında kesilir ve Gelir Vergisi matrahından tenzil edilir."
                 >
@@ -370,16 +378,16 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                     });
                   }}
                   title="Sendika Aidatı (TİS Md. 18 & GVK 63/4 uyarınca Gelir Vergisi matrahından tenzil edilir)"
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500 font-mono"
+                  className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Spor Aidatı */}
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded border bg-white/95 border-amber-200/90 shadow-2xs hover:border-amber-400 transition-all">
               <div className="flex items-center flex-1 min-w-0 pr-1">
                 <label
-                  className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap"
+                  className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap cursor-pointer"
                   htmlFor="kesSpor"
                   title="Spor Aidatı"
                 >
@@ -397,18 +405,18 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   defaultValue={bordro.sporAidati > 0 ? formatCurrency(bordro.sporAidati) : ''}
                   onFocus={e => e.target.select()}
                   onBlur={e => onChange({ sporAidati: parseCurrency(e.target.value) })}
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                  className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Vergiden Mua (GVK Madde 31 Engellilik İndirimi / Gazi Muafiyeti) */}
             {bordro.calisanStatusu !== 'normal' && (
-              <div className="flex flex-col gap-1 bg-amber-50/60 p-1.5 rounded border border-amber-200/90">
+              <div className="flex flex-col gap-1 bg-amber-100/60 p-1.5 rounded border border-amber-300 shadow-2xs hover:border-amber-400 transition-all">
                 <div className="flex items-center justify-between gap-1.5">
                   <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
                     <label
-                      className="text-[11px] 2xl:text-xs text-slate-800 font-bold whitespace-nowrap"
+                      className="text-[11px] 2xl:text-xs text-slate-800 font-bold whitespace-nowrap cursor-pointer"
                       htmlFor="kesVergidenMua"
                       title="GVK Madde 31 - Engelli / Gazi Vergi İndirimi"
                     >
@@ -432,7 +440,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       defaultValue={bordro.vergiMuafiyeti > 0 ? formatCurrency(bordro.vergiMuafiyeti) : ''}
                       onFocus={e => e.target.select()}
                       onBlur={e => onChange({ vergiMuafiyeti: parseCurrency(e.target.value) })}
-                      className="w-full text-xs font-bold text-right bg-white/95 border border-amber-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                      className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                     />
                   </div>
                 </div>
@@ -487,10 +495,10 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
             )}
 
             {/* Terfi Farkı (+GELİR) */}
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded border bg-amber-50/70 border-amber-100/80 hover:border-amber-400 transition-all">
               <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
                 <label
-                  className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap"
+                  className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap cursor-pointer"
                   htmlFor="kesTerfiFarki"
                   title="TİS İntibak / Terfi Farkı (Gelir Kalemi)"
                 >
@@ -514,16 +522,16 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   defaultValue={bordro.terfiFarki > 0 ? formatCurrency(bordro.terfiFarki) : ''}
                   onFocus={e => e.target.select()}
                   onBlur={e => onChange({ terfiFarki: parseCurrency(e.target.value) })}
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                  className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Mahsup Ksnt. */}
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded border bg-white/95 border-amber-200/90 shadow-2xs hover:border-amber-400 transition-all">
               <div className="flex items-center flex-1 min-w-0 pr-1">
                 <label
-                  className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap"
+                  className="text-[11px] 2xl:text-xs text-slate-700 font-medium whitespace-nowrap cursor-pointer"
                   htmlFor="kesMahsup"
                   title="Mahsup Kesintisi"
                 >
@@ -541,16 +549,16 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   defaultValue={bordro.mahsupKesintisi > 0 ? formatCurrency(bordro.mahsupKesintisi) : ''}
                   onFocus={e => e.target.select()}
                   onBlur={e => onChange({ mahsupKesintisi: parseCurrency(e.target.value) })}
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                  className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
               </div>
             </div>
 
             {/* SSK Matrah D: (SSK Matrah Düzeltmesi) */}
-            <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded border bg-amber-50/70 border-amber-100/80 hover:border-amber-400 transition-all">
               <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
                 <label
-                  className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap"
+                  className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap cursor-pointer"
                   htmlFor="kesSskMatrahD"
                   title="SSK Matrah Düzeltmesi: Yalnızca SSK Matrahını ve SSK primlerini etkiler; vergi matrahına ve vergilere dahil edilmez."
                 >
@@ -574,20 +582,27 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   defaultValue={bordro.sskMatrahD > 0 ? formatCurrency(bordro.sskMatrahD) : ''}
                   onFocus={e => e.target.select()}
                   onBlur={e => onChange({ sskMatrahD: parseCurrency(e.target.value) })}
-                  className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                  className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Custom Deductions List */}
-            {(bordro.customDeductions || []).map(item => (
-              <div key={item.id} className="flex items-center justify-between gap-1.5 pt-0.5">
+            {(bordro.customDeductions || []).map((item, cIndex) => (
+              <div
+                key={item.id}
+                className={`flex items-center justify-between gap-1.5 p-1.5 rounded border transition-all ${
+                  cIndex % 2 === 0
+                    ? 'bg-white/95 border-amber-200/90 shadow-2xs'
+                    : 'bg-amber-50/70 border-amber-100/80'
+                } hover:border-amber-400`}
+              >
                 <div className="flex items-center gap-1 flex-1 min-w-0 pr-1">
                   <span className="text-[11px] text-slate-700 font-medium truncate">{item.name}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveCustomDeduction(item.id)}
-                    className="no-print p-0.5 text-rose-500 hover:text-rose-700"
+                    className="no-print p-0.5 text-rose-500 hover:text-rose-700 cursor-pointer"
                     title="Bu kesintiyi sil"
                   >
                     <Trash2 className="w-3 h-3" />
@@ -600,7 +615,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                     type="text"
                     defaultValue={formatCurrency(item.amount)}
                     onBlur={e => handleCustomDeductionAmountChange(item.id, e.target.value)}
-                    className="w-full text-xs font-semibold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                    className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                   />
                 </div>
               </div>

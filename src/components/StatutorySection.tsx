@@ -22,10 +22,10 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
       id="statutory-and-summary-section"
       className="md:col-span-3 p-3 2xl:p-3.5 rounded-lg bg-indigo-50/45 border border-indigo-200/90 space-y-1.5 2xl:space-y-2 font-dotmatrix shadow-xs flex flex-col justify-between"
     >
-      <div className="space-y-1 2xl:space-y-1.5">
+      <div className="space-y-1.5 2xl:space-y-2">
         {/* Çalıştığı Gün */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="calistigiGun">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-indigo-200/90 shadow-2xs hover:border-indigo-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="calistigiGun">
             Çalıştığı Gün
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -39,14 +39,14 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               defaultValue={bordro.calistigiGun > 0 ? formatCurrency(bordro.calistigiGun) : ''}
               onFocus={e => e.target.select()}
               onBlur={e => onChange({ calistigiGun: parseCurrency(e.target.value) })}
-              className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
+              className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* SSK Günü */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="sskGunu">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-indigo-50/70 border-indigo-100/80 hover:border-indigo-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="sskGunu">
             SSK Günü
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -60,13 +60,13 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               defaultValue={bordro.sskGunu > 0 ? formatCurrency(bordro.sskGunu) : ''}
               onFocus={e => e.target.select()}
               onBlur={e => onChange({ sskGunu: parseCurrency(e.target.value) })}
-              className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
+              className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* SSK Matrahı */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-indigo-200/90 shadow-2xs hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label className="text-slate-800 shrink-0 text-xs font-semibold" htmlFor="sskMatrahi">
               SSK Matrahı
@@ -86,13 +86,13 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.sskMatrahi)}
-              className="w-full text-xs font-bold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-bold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* SSK Prim İşçi */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-indigo-50/70 border-indigo-100/80 hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="sskPrimIsci">
               SSK Prim İşçi
@@ -120,13 +120,13 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.sskPrimIsci)}
-              className="w-full text-xs font-semibold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-semibold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* SSK Prim(İşv) */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-indigo-200/90 shadow-2xs hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="sskPrimIsv">
               SSK Prim(İşv)
@@ -150,16 +150,16 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.sskPrimIsv)}
-              className="w-full text-xs font-semibold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-semibold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* Yıllık Glr.VM (Kümülatif Matrah) */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-indigo-50/70 border-indigo-100/80 hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label
-              className="text-slate-700 shrink-0 text-xs font-medium"
+              className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer"
               htmlFor="yillikGlrVM"
               title="Bu ay başlamadan önceki kümülatif gelir vergisi matrahı"
             >
@@ -183,13 +183,13 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               defaultValue={bordro.yillikGlrVM > 0 ? formatCurrency(bordro.yillikGlrVM) : ''}
               onFocus={e => e.target.select()}
               onBlur={e => onChange({ yillikGlrVM: parseCurrency(e.target.value) })}
-              className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
+              className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Aylık Glr.VM */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-indigo-200/90 shadow-2xs hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="aylikGlrVM">
               Aylık Glr.VM
@@ -209,23 +209,23 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.aylikGlrVM)}
-              className="w-full text-xs font-semibold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-semibold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* Gelir Vergisi (with mode selector) */}
-        <div className="flex flex-col gap-1 bg-indigo-100/60 p-1.5 rounded border border-indigo-300/80">
+        <div className="flex flex-col gap-1 bg-indigo-100/80 p-2 rounded-lg border border-indigo-300 shadow-2xs hover:border-indigo-400 transition-all">
           <div className="flex items-center justify-between gap-1">
             <div className="flex items-center gap-1 flex-1 min-w-0">
-              <label className="text-indigo-950 font-bold shrink-0 text-xs" htmlFor="gelirVergisi">
+              <label className="text-indigo-950 font-bold shrink-0 text-xs cursor-pointer" htmlFor="gelirVergisi">
                 Gelir Vergisi
               </label>
               <select
                 id="vergiDilimModu"
                 value={bordro.vergiDilimModu}
                 onChange={e => onChange({ vergiDilimModu: e.target.value })}
-                className="no-print text-[9px] font-bold bg-white text-indigo-950 border border-indigo-300 rounded px-1 py-0.5 focus:ring-1 focus:ring-indigo-600 cursor-pointer"
+                className="no-print text-[9px] font-bold bg-white text-indigo-950 border border-indigo-300 rounded px-1.5 py-0.5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 cursor-pointer shadow-2xs"
                 title="Otomatik Kademeli Tarife veya Sabit Dilim Seçimi"
               >
                 <option value="oto">Kademeli (GİB 2026)</option>
@@ -243,18 +243,18 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
                 type="text"
                 readOnly
                 value={formatCurrency(bordro.gelirVergisi)}
-                className="w-full text-xs font-bold text-right text-indigo-950 bg-white border border-indigo-300 rounded px-1.5 py-0.5"
+                className="w-full text-xs font-bold text-right text-indigo-950 bg-white border border-indigo-300 rounded px-1.5 py-0.5 font-mono shadow-2xs"
               />
             </div>
           </div>
-          <div className="flex justify-between items-center text-[10px] text-indigo-800 px-0.5">
+          <div className="flex justify-between items-center text-[10px] text-indigo-900 px-0.5 font-medium">
             <span>Efektif Oran:</span>
-            <span className="font-semibold">%{effectiveRate}</span>
+            <span className="font-bold">%{effectiveRate}</span>
           </div>
         </div>
 
         {/* Damga Vergisi */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-indigo-200/90 shadow-2xs hover:border-indigo-400 transition-all">
           <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="damgaVergisi">
             Damga Vergisi
           </label>
@@ -266,13 +266,13 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.damgaVergisi)}
-              className="w-full text-xs font-semibold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-semibold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* İşs.Sig.(İşç) */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-indigo-50/70 border-indigo-100/80 hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="issSigIsc">
               İşs.Sig.(İşç)
@@ -300,13 +300,13 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.issSigIsc)}
-              className="w-full text-xs font-semibold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-semibold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* İşs.Sig.(İşv) */}
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-indigo-200/90 shadow-2xs hover:border-indigo-400 transition-all">
           <div className="flex items-center gap-1">
             <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="issSigIsv">
               İşs.Sig.(İşv)
@@ -334,14 +334,14 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               type="text"
               readOnly
               value={formatCurrency(bordro.issSigIsv)}
-              className="w-full text-xs font-semibold text-right bg-indigo-100/50 border border-indigo-200/90 rounded px-1.5 py-0.5 text-slate-900"
+              className="w-full text-xs font-semibold text-right bg-indigo-100/60 border border-indigo-200 rounded px-1.5 py-0.5 text-slate-900 font-mono"
             />
           </div>
         </div>
 
         {/* Mahsup Fark */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="mahsupFark">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-indigo-50/70 border-indigo-100/80 hover:border-indigo-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="mahsupFark">
             Mahsup Fark
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -355,7 +355,7 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               defaultValue={bordro.mahsupFark !== 0 ? formatCurrency(bordro.mahsupFark) : ''}
               onFocus={e => e.target.select()}
               onBlur={e => onChange({ mahsupFark: parseCurrency(e.target.value) })}
-              className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
+              className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>

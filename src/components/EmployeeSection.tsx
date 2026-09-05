@@ -30,8 +30,8 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
     >
       <div className="space-y-1.5 2xl:space-y-2">
         {/* Adı */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="adi">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-sky-200/90 shadow-2xs hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="adi">
             Adı
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -44,14 +44,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               value={bordro.adi}
               onChange={e => onChange({ adi: e.target.value })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-bold bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-bold bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Soyadı */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="soyadi">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-sky-50/70 border-sky-100/80 hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="soyadi">
             Soyadı
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -64,14 +64,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               value={bordro.soyadi}
               onChange={e => onChange({ soyadi: e.target.value })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-bold uppercase bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-bold uppercase bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Ünvanı */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="unvani">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-sky-200/90 shadow-2xs hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="unvani">
             Ünvanı
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -84,14 +84,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               value={bordro.unvani}
               onChange={e => onChange({ unvani: e.target.value })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold uppercase bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold uppercase bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Der/Kad. */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="derKad">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-sky-50/70 border-sky-100/80 hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="derKad">
             Der/Kad.
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -104,15 +104,15 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               value={bordro.derKad}
               onChange={e => onChange({ derKad: e.target.value })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Kıdem & Hizmet Yılı */}
-        <div className="grid grid-cols-2 gap-1.5 text-xs pt-0.5">
+        <div className="grid grid-cols-2 gap-1.5 text-xs p-1.5 rounded border bg-white/95 border-sky-200/90 shadow-2xs hover:border-sky-400 transition-all">
           <div>
-            <label className="text-slate-700 block text-[10.5px] font-medium" htmlFor="kidemYili">
+            <label className="text-slate-700 block text-[10.5px] font-medium cursor-pointer" htmlFor="kidemYili">
               Kıdem Yılı
             </label>
             <input
@@ -123,11 +123,11 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               value={bordro.kidemYili || ''}
               onChange={e => onChange({ kidemYili: parseInt(e.target.value, 10) || 0 })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
           <div>
-            <label className="text-slate-700 block text-[10.5px] font-medium" htmlFor="hzmZammiYil">
+            <label className="text-slate-700 block text-[10.5px] font-medium cursor-pointer" htmlFor="hzmZammiYil">
               Hzm.Zammı Yıl
             </label>
             <input
@@ -144,15 +144,15 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
                 onChange({ hzmZammiYil: val, earnings: updatedEarnings });
               }}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Saat Ücreti - Temel Baz Katsayı */}
-        <div className="flex items-center justify-between gap-1 bg-sky-100/70 p-1.5 rounded border border-sky-300/90">
+        <div className="flex items-center justify-between gap-1 bg-sky-100/80 p-1.5 rounded border border-sky-300 shadow-2xs hover:border-sky-400 transition-all">
           <div className="flex items-center gap-1">
-            <label className="text-sky-950 font-bold shrink-0 text-xs" htmlFor="saatUcr">
+            <label className="text-sky-950 font-bold shrink-0 text-xs cursor-pointer" htmlFor="saatUcr">
               Saat Ücr
             </label>
             <span
@@ -173,14 +173,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               defaultValue={bordro.saatUcr > 0 ? formatCurrency(bordro.saatUcr, 6) : ''}
               onBlur={e => handleSaatUcrBlur(e.target.value)}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-bold text-right text-sky-950 bg-white border border-sky-300 rounded px-1.5 py-0.5 focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
+              className="w-full text-xs 2xl:text-sm font-bold text-right text-sky-950 bg-white border border-sky-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Emk. Zam */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="emkZam">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-sky-50/70 border-sky-100/80 hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="emkZam">
             Emk. Zam
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -194,14 +194,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               defaultValue={bordro.emkZam > 0 ? formatCurrency(bordro.emkZam, 6) : ''}
               onBlur={e => handleEmkZamBlur(e.target.value)}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Brt Aylk */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="brtAylk">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-sky-200/90 shadow-2xs hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="brtAylk">
             Brt Aylk
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -215,14 +215,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               defaultValue={bordro.brtAylk > 0 ? formatCurrency(bordro.brtAylk) : ''}
               onBlur={e => onChange({ brtAylk: parseCurrency(e.target.value) })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Kdm. Zam */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="kdmZam">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-sky-50/70 border-sky-100/80 hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="kdmZam">
             Kdm. Zam
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -236,14 +236,14 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               defaultValue={bordro.kdmZam > 0 ? formatCurrency(bordro.kdmZam) : ''}
               onBlur={e => onChange({ kdmZam: parseCurrency(e.target.value) })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
 
         {/* Hast. Gün */}
-        <div className="flex items-center justify-between gap-1">
-          <label className="text-slate-700 shrink-0 text-xs font-medium" htmlFor="hastGun">
+        <div className="flex items-center justify-between gap-1 p-1.5 rounded border bg-white/95 border-sky-200/90 shadow-2xs hover:border-sky-400 transition-all">
+          <label className="text-slate-700 shrink-0 text-xs font-medium cursor-pointer" htmlFor="hastGun">
             Hast. Gün
           </label>
           <div className="flex items-center w-36 2xl:w-44">
@@ -257,7 +257,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               defaultValue={bordro.hastGun > 0 ? formatCurrency(bordro.hastGun) : ''}
               onBlur={e => onChange({ hastGun: parseCurrency(e.target.value) })}
               onFocus={e => e.target.select()}
-              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
+              className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
         </div>
