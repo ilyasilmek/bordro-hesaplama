@@ -92,6 +92,10 @@ export function calculateEarningItem(
       return item.hours * totalBase * 0.15;
     case 'mesai200':
       return item.hours * totalBase * 2.0;
+    case 'mesai175':
+      return item.hours * totalBase * 1.75;
+    case 'postabasi':
+      return item.hours * 5.28;
     case 'gms24':
       return item.hours * totalBase * 0.24;
     case 'iase':
@@ -108,10 +112,52 @@ export function calculateEarningItem(
 export function calculateBordro(bordro: BordroData): BordroData {
   const isNormal = bordro.calisanStatusu === 'normal';
 
-  const earnings = bordro.earnings.map(item => {
+  // Ensure 'postabasi' item exists right after 'ui'
+  const rawEarnings = bordro.earnings ? [...bordro.earnings] : [];
+  if (!rawEarnings.some(item => item.id === 'postabasi')) {
+    const uiIndex = rawEarnings.findIndex(item => item.id === 'ui');
+    const postabasiItem: EarningItem = {
+      id: 'postabasi',
+      label: 'Postabaşılık Saati',
+      hours: 0,
+      amount: 0,
+      rule: 'postabasi',
+      badge: '5,28 ₺'
+    };
+    if (uiIndex !== -1) {
+      rawEarnings.splice(uiIndex + 1, 0, postabasiItem);
+    } else {
+      rawEarnings.push(postabasiItem);
+    }
+  }
+
+  const earnings = rawEarnings.map(item => {
     // Normal çalışanlarda GŞT %10 (Gazi Şeref Tazminatı) yoktur
     if (isNormal && item.id === 'gst') {
       return { ...item, hours: 0, amount: 0 };
+    }
+    // Gazi çalışanında Postabaşılık Saati yoktur
+    if (!isNormal && item.id === 'postabasi') {
+      return { ...item, hours: 0, amount: 0 };
+    }
+    // Gazi çalışanında FM %75 yoktur, sadece standart Fzl Mes %100 vardır
+    if (!isNormal && (item.id === 'fm' || item.rule === 'mesai175')) {
+      const gaziFmItem: EarningItem = {
+        ...item,
+        rule: 'mesai200',
+        label: 'Fzl Mes %100',
+        badge: 'OTO'
+      };
+      return {
+        ...gaziFmItem,
+        amount: calculateEarningItem(
+          gaziFmItem,
+          bordro.saatUcr,
+          bordro.emkZam,
+          bordro.iaseGunlukKatsayi ?? 301.1575,
+          bordro.hizmetYillikKatsayi ?? 24.67
+        )
+      };
     }
     return {
       ...item,
@@ -119,8 +165,8 @@ export function calculateBordro(bordro: BordroData): BordroData {
         item,
         bordro.saatUcr,
         bordro.emkZam,
-        bordro.iaseGunlukKatsayi,
-        bordro.hizmetYillikKatsayi
+        bordro.iaseGunlukKatsayi ?? 301.1575,
+        bordro.hizmetYillikKatsayi ?? 24.67
       )
     };
   });
@@ -263,6 +309,7 @@ export const SAMPLE_AUGUST_2026_BORDRO: BordroData = {
     { id: "ht", label: "Hafta Tatili", hours: 30, amount: 12150.90, rule: "base", badge: "OTO" },
     { id: "ubgt", label: "UBGT", hours: 9, amount: 3645.27, rule: "base", badge: "OTO" },
     { id: "ui", label: "Ücretli İzin", hours: 64, amount: 25921.92, rule: "base", badge: "OTO" },
+    { id: "postabasi", label: "Postabaşılık Saati", hours: 0, amount: 0, rule: "postabasi", badge: "5,28 ₺" },
     { id: "ur", label: "Ücretli Rapor", hours: 72, amount: 29162.16, rule: "base", badge: "OTO" },
     { id: "vp", label: "Vardiya Prim", hours: 0, amount: 0, rule: "vardiya10", badge: "OTO" },
     { id: "gc", label: "Gece Çalışma", hours: 0, amount: 0, rule: "gece15", badge: "OTO" },
@@ -331,6 +378,7 @@ export const DEFAULT_TCDD_BORDRO: BordroData = {
     { id: "ht", label: "Hafta Tatili", hours: 0, amount: 0, rule: "base", badge: "OTO" },
     { id: "ubgt", label: "UBGT", hours: 0, amount: 0, rule: "base", badge: "OTO" },
     { id: "ui", label: "Ücretli İzin", hours: 0, amount: 0, rule: "base", badge: "OTO" },
+    { id: "postabasi", label: "Postabaşılık Saati", hours: 0, amount: 0, rule: "postabasi", badge: "5,28 ₺" },
     { id: "ur", label: "Ücretli Rapor", hours: 0, amount: 0, rule: "base", badge: "OTO" },
     { id: "vp", label: "Vardiya Prim", hours: 0, amount: 0, rule: "vardiya10", badge: "OTO" },
     { id: "gc", label: "Gece Çalışma", hours: 0, amount: 0, rule: "gece15", badge: "OTO" },

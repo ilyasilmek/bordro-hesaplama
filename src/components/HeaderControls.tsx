@@ -44,16 +44,28 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
     if (status === bordro.calisanStatusu) return;
 
     if (status === 'normal') {
+      const updatedEarnings = bordro.earnings.map(e => {
+        if (e.id === 'gst') return { ...e, hours: 0, amount: 0 };
+        if (e.id === 'fm') return { ...e, rule: 'mesai175' as const, label: 'FM %75 Pntr', badge: '%75' };
+        return e;
+      });
       onChange({
         calisanStatusu: 'normal',
         mevzuatNotu: '31. Dönem TİS 1/1 • TCDD Taşımacılık A.Ş. Sürekli İşçi Bordrosu (Standart 4/a)',
-        vergiMuafiyeti: 0
+        vergiMuafiyeti: 0,
+        earnings: updatedEarnings
       });
     } else {
+      const updatedEarnings = bordro.earnings.map(e => {
+        if (e.id === 'postabasi') return { ...e, hours: 0, amount: 0 };
+        if (e.id === 'fm' || e.rule === 'mesai175') return { ...e, rule: 'mesai200' as const, label: 'Fzl Mes %100', badge: 'OTO' };
+        return e;
+      });
       onChange({
         calisanStatusu: 'gazi',
         mevzuatNotu: 'Terörle Mücadele Kapsamı (Gazi) • 3. Derece Engelli Vergi İndirimi (3.000 ₺) • 31. Dönem TİS 1/1',
-        vergiMuafiyeti: bordro.vergiMuafiyeti > 0 ? bordro.vergiMuafiyeti : 3000
+        vergiMuafiyeti: bordro.vergiMuafiyeti > 0 ? bordro.vergiMuafiyeti : 3000,
+        earnings: updatedEarnings
       });
     }
   };

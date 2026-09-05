@@ -119,9 +119,11 @@ export const SavedBordrolarModal: React.FC<SavedBordrolarModalProps> = ({
       copy.calisanStatusu = 'normal';
       copy.mevzuatNotu = '31. Dönem TİS 1/1 • TCDD Taşımacılık A.Ş. Sürekli İşçi Bordrosu (Standart 4/a)';
       copy.vergiMuafiyeti = 0;
-      copy.earnings = copy.earnings.map(item =>
-        item.id === 'gst' ? { ...item, hours: 0, amount: 0 } : item
-      );
+      copy.earnings = copy.earnings.map(item => {
+        if (item.id === 'gst') return { ...item, hours: 0, amount: 0 };
+        if (item.id === 'fm') return { ...item, rule: 'mesai175', label: 'FM %75 Pntr', badge: '%75' };
+        return item;
+      });
       onLoadBordro(copy);
       onClose();
       return;

@@ -44,9 +44,11 @@ export function App() {
           calisanStatusu: 'normal',
           mevzuatNotu: '31. Dönem TİS 1/1 • TCDD Taşımacılık A.Ş. Sürekli İşçi Bordrosu (Standart 4/a)',
           vergiMuafiyeti: 0,
-          earnings: SAMPLE_AUGUST_2026_BORDRO.earnings.map(e =>
-            e.id === 'gst' ? { ...e, hours: 0, amount: 0 } : e
-          )
+          earnings: SAMPLE_AUGUST_2026_BORDRO.earnings.map(e => {
+            if (e.id === 'gst') return { ...e, hours: 0, amount: 0 };
+            if (e.id === 'fm') return { ...e, rule: 'mesai175', label: 'FM %75 Pntr', badge: '%75' };
+            return e;
+          })
         });
       }
       return calculateBordro(SAMPLE_AUGUST_2026_BORDRO);
