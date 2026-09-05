@@ -1,16 +1,16 @@
 // Service Worker for TCDD Bordro Düzenleyici PWA
-const CACHE_NAME = 'tcdd-bordro-v1';
+const CACHE_NAME = 'tcdd-bordro-v2';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.webmanifest',
-  '/pwa-192x192.png',
-  '/pwa-512x512.png',
-  '/pwa-maskable-512x512.png',
-  '/apple-touch-icon.png',
-  '/favicon.ico',
-  '/icon.svg'
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './pwa-192x192.png',
+  './pwa-512x512.png',
+  './pwa-maskable-512x512.png',
+  './apple-touch-icon.png',
+  './favicon.ico',
+  './icon.svg'
 ];
 
 // Install: Cache essential shell
@@ -59,7 +59,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           return caches.match(request).then((cached) => {
-            return cached || caches.match('/index.html') || caches.match('/');
+            return cached || caches.match('./index.html') || caches.match('./');
           });
         })
     );
