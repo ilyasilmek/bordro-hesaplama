@@ -29,7 +29,16 @@ export function App() {
   const handleHourChange = (id: string, hours: number) => {
     setBordro(prev => {
       const updatedEarnings = prev.earnings.map(item =>
-        item.id === id ? { ...item, hours } : item
+        item.id === id ? { ...item, hours, manualAmount: undefined } : item
+      );
+      return calculateBordro({ ...prev, earnings: updatedEarnings });
+    });
+  };
+
+  const handleAmountChange = (id: string, amount: number) => {
+    setBordro(prev => {
+      const updatedEarnings = prev.earnings.map(item =>
+        item.id === id ? { ...item, amount, manualAmount: amount } : item
       );
       return calculateBordro({ ...prev, earnings: updatedEarnings });
     });
@@ -192,6 +201,7 @@ export function App() {
             bordro={bordro}
             onChange={handleChange}
             onHourChange={handleHourChange}
+            onAmountChange={handleAmountChange}
           />
 
           {/* Right Column: Yasal Kesintiler & Sonuçlar (col-span-3) */}

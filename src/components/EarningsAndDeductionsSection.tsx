@@ -7,12 +7,14 @@ interface EarningsAndDeductionsSectionProps {
   bordro: BordroData;
   onChange: (updates: Partial<BordroData>) => void;
   onHourChange: (id: string, hours: number) => void;
+  onAmountChange?: (id: string, amount: number) => void;
 }
 
 export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSectionProps> = ({
   bordro,
   onChange,
-  onHourChange
+  onHourChange,
+  onAmountChange
 }) => {
   const [newDedName, setNewDedName] = useState('');
   const [newDedAmount, setNewDedAmount] = useState('');
@@ -193,12 +195,17 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                         className="col-span-5 text-xs text-right bg-white/95 border border-emerald-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 font-mono"
                       />
                       <input
+                        key={`amount-${earning.id}-${earning.amount}`}
                         id={`amount-${earning.id}`}
-                        title={`${earning.label} Tutarı`}
+                        title={`${earning.label} Tutarı (Otomatik veya Manuel Düzenlenebilir)`}
                         type="text"
-                        readOnly
-                        value={formatCurrency(earning.amount)}
-                        className="col-span-7 text-xs font-bold text-right bg-emerald-100/50 text-emerald-950 border border-emerald-200/90 rounded px-1.5 py-0.5 font-mono"
+                        defaultValue={formatCurrency(earning.amount)}
+                        onBlur={e => {
+                          if (onAmountChange) {
+                            onAmountChange(earning.id, parseCurrency(e.target.value));
+                          }
+                        }}
+                        className="col-span-7 text-xs font-bold text-right bg-emerald-100/50 text-emerald-950 border border-emerald-200/90 rounded px-1.5 py-0.5 font-mono focus:bg-white focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500"
                       />
                     </div>
                   </div>

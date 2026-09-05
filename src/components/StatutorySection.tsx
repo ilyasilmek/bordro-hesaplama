@@ -130,11 +130,11 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               className="no-print text-[8px] bg-indigo-100 text-indigo-800 px-1 rounded font-semibold border border-indigo-200"
               title={
                 bordro.calisanStatusu === 'normal'
-                  ? 'Standart İşveren Prim Payı (%20.50)'
+                  ? 'Standart İşveren Prim Payı (%21.75: %11 MYÖ + %7.5 GSS + %3.25 Tehlike/KVS)'
                   : 'İşveren Prim Payı (%14.25)'
               }
             >
-              {bordro.calisanStatusu === 'normal' ? '%20.50' : '%14.25'}
+              {bordro.calisanStatusu === 'normal' ? '%21.75' : '%14.25'}
             </span>
           </div>
           <div className="flex items-center w-36 2xl:w-44">

@@ -223,6 +223,7 @@ export interface EarningItem {
   unitLabel?: string;
   badge?: string;
   customRate?: number;
+  manualAmount?: number;
 }
 
 export interface CustomDeduction {
