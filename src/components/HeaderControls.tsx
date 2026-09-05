@@ -121,20 +121,6 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             className="flex items-center bg-slate-200/90 p-0.5 rounded-lg border border-slate-300 text-xs font-bold shadow-2xs"
           >
             <button
-              id="btn-status-gazi"
-              type="button"
-              onClick={() => handleStatusSwitch('gazi')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer font-bold ${
-                bordro.calisanStatusu !== 'normal'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'text-slate-700 hover:text-slate-900 hover:bg-slate-300/60'
-              }`}
-              title="Gazi Statüsü (Terörle Mücadele): GŞT %10, 3.000 TL Engelli Vergi İndirimi ve %9 SSK Primi Aktiftir"
-            >
-              <Award className="w-3.5 h-3.5" />
-              <span>Gazi Statüsü</span>
-            </button>
-            <button
               id="btn-status-normal"
               type="button"
               onClick={() => handleStatusSwitch('normal')}
@@ -147,6 +133,20 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             >
               <User className="w-3.5 h-3.5" />
               <span>Normal Çalışan</span>
+            </button>
+            <button
+              id="btn-status-gazi"
+              type="button"
+              onClick={() => handleStatusSwitch('gazi')}
+              className={`px-3 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer font-bold ${
+                bordro.calisanStatusu !== 'normal'
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-slate-300/60'
+              }`}
+              title="Gazi Statüsü (Terörle Mücadele): GŞT %10, 3.000 TL Engelli Vergi İndirimi ve %9 SSK Primi Aktiftir"
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>Gazi Statüsü</span>
             </button>
           </div>
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { BordroData } from '../types';
 import { formatCurrency, parseCurrency } from '../utils/bordroEngine';
 
@@ -34,7 +35,9 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="calistigiGun"
               name="calistigiGun"
               type="text"
-              defaultValue={formatCurrency(bordro.calistigiGun)}
+              placeholder="0"
+              defaultValue={bordro.calistigiGun > 0 ? formatCurrency(bordro.calistigiGun) : ''}
+              onFocus={e => e.target.select()}
               onBlur={e => onChange({ calistigiGun: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
             />
@@ -53,7 +56,9 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="sskGunu"
               name="sskGunu"
               type="text"
-              defaultValue={formatCurrency(bordro.sskGunu)}
+              placeholder="0"
+              defaultValue={bordro.sskGunu > 0 ? formatCurrency(bordro.sskGunu) : ''}
+              onFocus={e => e.target.select()}
               onBlur={e => onChange({ sskGunu: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
             />
@@ -174,7 +179,9 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="yillikGlrVM"
               name="yillikGlrVM"
               type="text"
-              defaultValue={formatCurrency(bordro.yillikGlrVM)}
+              placeholder="0,00"
+              defaultValue={bordro.yillikGlrVM > 0 ? formatCurrency(bordro.yillikGlrVM) : ''}
+              onFocus={e => e.target.select()}
               onBlur={e => onChange({ yillikGlrVM: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
             />
@@ -344,7 +351,9 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="mahsupFark"
               name="mahsupFark"
               type="text"
-              defaultValue={formatCurrency(bordro.mahsupFark)}
+              placeholder="0,00"
+              defaultValue={bordro.mahsupFark !== 0 ? formatCurrency(bordro.mahsupFark) : ''}
+              onFocus={e => e.target.select()}
               onBlur={e => onChange({ mahsupFark: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
             />
@@ -353,7 +362,7 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
       </div>
 
       {/* Summary Totals & Net Pay */}
-      <div className="space-y-1.5 pt-2 border-t-2 border-indigo-200/90">
+      <div className="space-y-2 pt-2 border-t-2 border-indigo-200/90">
         {/* Gelir Toplamı */}
         <div className="flex items-center justify-between text-xs">
           <label className="font-bold text-emerald-950 shrink-0" htmlFor="gelirToplami">
@@ -390,50 +399,61 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
           </div>
         </div>
 
-        {/* NET ÖDEME */}
-        <div className="flex items-center justify-between p-1.5 bg-emerald-100/80 rounded-md border-2 border-emerald-600 shadow-xs">
-          <div className="flex items-center gap-1">
-            <label
-              className="font-black text-xs 2xl:text-sm tracking-wide text-emerald-950 shrink-0"
-              htmlFor="netOdeme"
-            >
-              Net Ödeme
-            </label>
-            <span className="no-print text-[8px] bg-emerald-700 text-white font-bold px-1.5 py-0.5 rounded">
-              NET
+        {/* NET ÖDEME - Büyük, Vurgulu ve Animasyonlu */}
+        <motion.div
+          id="net-odeme-container"
+          layout
+          initial={{ scale: 0.98, opacity: 0.9 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white p-3 sm:p-3.5 shadow-md shadow-emerald-700/20 border-2 border-emerald-500/90 flex flex-col gap-1.5 print:bg-white print:text-black print:border-black"
+        >
+          {/* Subtle glow highlight in background */}
+          <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-lg pointer-events-none" />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-200" />
+              </span>
+              <span className="font-extrabold text-xs 2xl:text-sm uppercase tracking-wider text-emerald-100 print:text-black">
+                NET ÖDEME
+              </span>
+            </div>
+            <span className="no-print text-[9px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full border border-white/30 tracking-wide uppercase">
+              ELE GEÇEN TUTAR
             </span>
           </div>
-          <div className="flex items-center w-40 2xl:w-48">
-            <span className="mr-1 font-bold text-emerald-900">:</span>
+
+          <div className="flex items-baseline justify-end w-full">
             <input
               id="netOdeme"
               name="netOdeme"
               type="text"
               readOnly
               value={`${formatCurrency(bordro.netOdeme)} TL`}
-              className="w-full text-sm 2xl:text-base font-black text-right text-emerald-950 bg-white border border-emerald-500 rounded px-2 py-0.5 shadow-xs"
+              className="sr-only"
             />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`net-val-${bordro.netOdeme}`}
+                initial={{ scale: 0.93, opacity: 0.5, y: 2 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.97, opacity: 0.7 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="flex items-baseline gap-1"
+              >
+                <span className="text-2xl sm:text-3xl 2xl:text-4xl font-black font-mono tracking-tight text-white drop-shadow-xs print:text-black">
+                  {formatCurrency(bordro.netOdeme)}
+                </span>
+                <span className="text-base sm:text-lg 2xl:text-xl font-extrabold text-emerald-200 print:text-black">
+                  TL
+                </span>
+              </motion.div>
+            </AnimatePresence>
           </div>
-        </div>
-
-        {/* Asgari Geç.İn */}
-        <div className="flex items-center justify-between text-xs text-slate-700">
-          <label className="shrink-0 font-medium" htmlFor="asgariGecIn">
-            Asgari Geç.İn
-          </label>
-          <div className="flex items-center w-36 2xl:w-44">
-            <span className="mr-1 text-slate-500 font-bold">:</span>
-            <input
-              key={`asgariGecIn-${bordro.asgariGecIn}`}
-              id="asgariGecIn"
-              name="asgariGecIn"
-              type="text"
-              defaultValue={formatCurrency(bordro.asgariGecIn)}
-              onBlur={e => onChange({ asgariGecIn: parseCurrency(e.target.value) })}
-              className="w-full text-xs text-right bg-white/95 border border-indigo-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-indigo-600 focus:ring-1 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

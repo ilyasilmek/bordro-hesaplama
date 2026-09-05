@@ -40,8 +40,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="adi"
               name="adi"
               type="text"
+              placeholder="Adı"
               value={bordro.adi}
               onChange={e => onChange({ adi: e.target.value })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-bold bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -58,8 +60,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="soyadi"
               name="soyadi"
               type="text"
+              placeholder="SOYADI"
               value={bordro.soyadi}
               onChange={e => onChange({ soyadi: e.target.value })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-bold uppercase bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -76,8 +80,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="unvani"
               name="unvani"
               type="text"
+              placeholder="Ünvanı"
               value={bordro.unvani}
               onChange={e => onChange({ unvani: e.target.value })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold uppercase bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -94,8 +100,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="derKad"
               name="derKad"
               type="text"
+              placeholder="001/ 01"
               value={bordro.derKad}
               onChange={e => onChange({ derKad: e.target.value })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -111,8 +119,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="kidemYili"
               name="kidemYili"
               type="number"
-              value={bordro.kidemYili}
+              placeholder="0"
+              value={bordro.kidemYili || ''}
               onChange={e => onChange({ kidemYili: parseInt(e.target.value, 10) || 0 })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -124,8 +134,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="hzmZammiYil"
               name="hzmZammiYil"
               type="number"
-              value={bordro.hzmZammiYil}
+              placeholder="0"
+              value={bordro.hzmZammiYil || ''}
               onChange={e => onChange({ hzmZammiYil: parseInt(e.target.value, 10) || 0 })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -151,8 +163,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="saatUcr"
               name="saatUcr"
               type="text"
-              defaultValue={formatCurrency(bordro.saatUcr, 6)}
+              placeholder="0,000000"
+              defaultValue={bordro.saatUcr > 0 ? formatCurrency(bordro.saatUcr, 6) : ''}
               onBlur={e => handleSaatUcrBlur(e.target.value)}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-bold text-right text-sky-950 bg-white border border-sky-300 rounded px-1.5 py-0.5 focus:border-sky-600 focus:ring-1 focus:ring-sky-600"
             />
           </div>
@@ -170,8 +184,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="emkZam"
               name="emkZam"
               type="text"
-              defaultValue={formatCurrency(bordro.emkZam, 6)}
+              placeholder="0,000000"
+              defaultValue={bordro.emkZam > 0 ? formatCurrency(bordro.emkZam, 6) : ''}
               onBlur={e => handleEmkZamBlur(e.target.value)}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -189,8 +205,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="brtAylk"
               name="brtAylk"
               type="text"
-              defaultValue={formatCurrency(bordro.brtAylk)}
+              placeholder="0,00"
+              defaultValue={bordro.brtAylk > 0 ? formatCurrency(bordro.brtAylk) : ''}
               onBlur={e => onChange({ brtAylk: parseCurrency(e.target.value) })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -208,8 +226,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="kdmZam"
               name="kdmZam"
               type="text"
-              defaultValue={formatCurrency(bordro.kdmZam)}
+              placeholder="0,00"
+              defaultValue={bordro.kdmZam > 0 ? formatCurrency(bordro.kdmZam) : ''}
               onBlur={e => onChange({ kdmZam: parseCurrency(e.target.value) })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
@@ -227,8 +247,10 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="hastGun"
               name="hastGun"
               type="text"
-              defaultValue={formatCurrency(bordro.hastGun)}
+              placeholder="0"
+              defaultValue={bordro.hastGun > 0 ? formatCurrency(bordro.hastGun) : ''}
               onBlur={e => onChange({ hastGun: parseCurrency(e.target.value) })}
+              onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />
           </div>
