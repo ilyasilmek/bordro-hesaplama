@@ -136,7 +136,13 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               type="number"
               placeholder="0"
               value={bordro.hzmZammiYil || ''}
-              onChange={e => onChange({ hzmZammiYil: parseInt(e.target.value, 10) || 0 })}
+              onChange={e => {
+                const val = parseInt(e.target.value, 10) || 0;
+                const updatedEarnings = bordro.earnings.map(item =>
+                  item.id === 'hzm' ? { ...item, hours: val } : item
+                );
+                onChange({ hzmZammiYil: val, earnings: updatedEarnings });
+              }}
               onFocus={e => e.target.select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white/95 border border-sky-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-400"
             />

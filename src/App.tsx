@@ -68,19 +68,26 @@ export function App() {
   const handleZero = () => {
     setBordro(prev => {
       const isNormal = prev.calisanStatusu === 'normal';
-      const zeroedEarnings = prev.earnings.map(item => ({ ...item, hours: 0, amount: 0 }));
+      const zeroedEarnings = prev.earnings.map(item => {
+        // Hizmet Zammı girilen saate göre değişmeyen, hizmet yılına bağlı maktu hakediştir
+        if (item.id === 'hzm') {
+          return item;
+        }
+        return { ...item, hours: 0, amount: 0 };
+      });
       return calculateBordro({
         ...prev,
         earnings: zeroedEarnings,
+        birlestirilmSosyalYardim: prev.birlestirilmSosyalYardim || 5089.70,
+        sporAidati: prev.sporAidati || 10,
+        calistigiGun: prev.calistigiGun || 31,
+        sskGunu: prev.sskGunu || 30,
         vergiMuafiyeti: isNormal ? 0 : (prev.vergiMuafiyeti || 3000),
         terfiFarki: 0,
         mahsupKesintisi: 0,
         sskMatrahD: 0,
         customDeductions: [],
-        calistigiGun: 0,
-        sskGunu: 0,
-        hastGun: 0,
-        mahsupFark: 0
+        hastGun: 0
       });
     });
   };
