@@ -252,10 +252,12 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       id={`hour-${earning.id}`}
                       title={`${earning.label} Süresi (${earning.unitLabel || 'Saat'}) - Tab tuşuyla alt satıra geçer`}
                       type="text"
+                      inputMode="decimal"
                       placeholder="0,00"
                       defaultValue={earning.hours > 0 ? formatCurrency(earning.hours) : ''}
                       onKeyDown={e => handleHourKeyDown(e, index)}
                       onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       onBlur={e => onHourChange(earning.id, parseCurrency(e.target.value))}
                       className="col-span-5 text-xs text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:bg-white font-mono font-semibold transition-all shadow-2xs"
                     />
@@ -265,9 +267,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       tabIndex={-1}
                       title={`${earning.label} Tutarı (Otomatik veya Manuel Düzenlenebilir)`}
                       type="text"
+                      inputMode="decimal"
                       placeholder="0,00"
                       defaultValue={earning.amount > 0 ? formatCurrency(earning.amount) : ''}
                       onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       onBlur={e => {
                         if (onAmountChange) {
                           onAmountChange(earning.id, parseCurrency(e.target.value));
@@ -317,9 +321,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   id="kesBirlestirilm"
                   name="kesBirlestirilm"
                   type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   defaultValue={bordro.birlestirilmSosyalYardim > 0 ? formatCurrency(bordro.birlestirilmSosyalYardim) : ''}
                   onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   onBlur={e => onChange({ birlestirilmSosyalYardim: parseCurrency(e.target.value) })}
                   className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
@@ -366,9 +372,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   id="kesSendika"
                   name="kesSendika"
                   type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   defaultValue={bordro.sendikaAidati > 0 ? formatCurrency(bordro.sendikaAidati) : ''}
                   onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   onBlur={e => {
                     const parsed = parseCurrency(e.target.value);
                     const tisAmount = Math.round(6.20 * (bordro.saatUcr + bordro.emkZam) * 100) / 100;
@@ -401,9 +409,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   id="kesSpor"
                   name="kesSpor"
                   type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   defaultValue={bordro.sporAidati > 0 ? formatCurrency(bordro.sporAidati) : ''}
                   onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   onBlur={e => onChange({ sporAidati: parseCurrency(e.target.value) })}
                   className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
@@ -436,9 +446,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                       id="kesVergidenMua"
                       name="kesVergidenMua"
                       type="text"
+                      inputMode="decimal"
                       placeholder="0,00"
                       defaultValue={bordro.vergiMuafiyeti > 0 ? formatCurrency(bordro.vergiMuafiyeti) : ''}
                       onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       onBlur={e => onChange({ vergiMuafiyeti: parseCurrency(e.target.value) })}
                       className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                     />
@@ -518,9 +530,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   id="kesTerfiFarki"
                   name="kesTerfiFarki"
                   type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   defaultValue={bordro.terfiFarki > 0 ? formatCurrency(bordro.terfiFarki) : ''}
                   onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   onBlur={e => onChange({ terfiFarki: parseCurrency(e.target.value) })}
                   className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
@@ -545,9 +559,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   id="kesMahsup"
                   name="kesMahsup"
                   type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   defaultValue={bordro.mahsupKesintisi > 0 ? formatCurrency(bordro.mahsupKesintisi) : ''}
                   onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   onBlur={e => onChange({ mahsupKesintisi: parseCurrency(e.target.value) })}
                   className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
@@ -578,9 +594,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   id="kesSskMatrahD"
                   name="kesSskMatrahD"
                   type="text"
+                  inputMode="decimal"
                   placeholder="0,00"
                   defaultValue={bordro.sskMatrahD > 0 ? formatCurrency(bordro.sskMatrahD) : ''}
                   onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   onBlur={e => onChange({ sskMatrahD: parseCurrency(e.target.value) })}
                   className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                 />
@@ -613,7 +631,10 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                   <input
                     key={`custom-ded-${item.id}-${item.amount}`}
                     type="text"
+                    inputMode="decimal"
                     defaultValue={formatCurrency(item.amount)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     onBlur={e => handleCustomDeductionAmountChange(item.id, e.target.value)}
                     className="w-full text-xs font-bold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
                   />
@@ -638,9 +659,12 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
               />
               <input
                 type="text"
+                inputMode="decimal"
                 placeholder="Tutar"
                 value={newDedAmount}
                 onChange={e => setNewDedAmount(e.target.value)}
+                onFocus={e => e.target.select()}
+                onClick={e => (e.target as HTMLInputElement).select()}
                 className="w-20 text-[11px] text-right bg-white border border-amber-300 rounded px-1.5 py-1 focus:outline-none focus:border-amber-600"
               />
               <button

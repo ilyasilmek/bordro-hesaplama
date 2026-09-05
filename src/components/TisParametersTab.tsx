@@ -77,11 +77,14 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="0.05"
                     min="1.0"
                     max="3.0"
                     value={tisConfig.normalOvertimeMultiplier}
                     onChange={(e) => updateField('normalOvertimeMultiplier', parseFloat(e.target.value) || 1.5)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-20 bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-slate-700"
                   />
                   <span className="font-mono text-slate-400 font-bold">x Yevmiye</span>
@@ -96,11 +99,14 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="0.1"
                     min="1.0"
                     max="4.0"
                     value={tisConfig.weekendOvertimeMultiplier}
                     onChange={(e) => updateField('weekendOvertimeMultiplier', parseFloat(e.target.value) || 2.0)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-20 bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-slate-700"
                   />
                   <span className="font-mono text-slate-400 font-bold">x Yevmiye</span>
@@ -115,11 +121,14 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="0.5"
                     min="1.0"
                     max="5.0"
                     value={tisConfig.holidayOvertimeMultiplier}
                     onChange={(e) => updateField('holidayOvertimeMultiplier', parseFloat(e.target.value) || 3.0)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-20 bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-slate-700"
                   />
                   <span className="font-mono text-slate-400 font-bold">x Yevmiye</span>
@@ -134,11 +143,14 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="0.01"
                     min="0"
                     max="0.5"
                     value={tisConfig.nightShiftAllowanceRate}
                     onChange={(e) => updateField('nightShiftAllowanceRate', parseFloat(e.target.value) || 0.15)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-20 bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-slate-700"
                   />
                   <span className="font-mono text-slate-400 font-bold">% Oran</span>
@@ -161,10 +173,13 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 </div>
                 <input
                   type="number"
+                  inputMode="numeric"
                   min="0"
                   max="200"
                   value={tisConfig.annualBonusDaysTotal}
                   onChange={(e) => updateField('annualBonusDaysTotal', parseFloat(e.target.value) || 60)}
+                  onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   className="w-20 bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-slate-700"
                 />
               </div>
@@ -176,10 +191,13 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 </div>
                 <input
                   type="number"
+                  inputMode="decimal"
                   step="0.5"
                   min="0"
                   value={tisConfig.seniorityPayPerYear}
                   onChange={(e) => updateField('seniorityPayPerYear', parseFloat(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   className="w-24 bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-slate-700"
                 />
               </div>
@@ -192,10 +210,13 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
+                    inputMode="numeric"
                     min="1"
                     max="2"
                     value={tisConfig.unionDuesDays}
                     onChange={(e) => updateField('unionDuesDays', parseInt(e.target.value) || 1)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-16 bg-slate-900 text-xs text-center font-bold text-slate-200 rounded px-2 py-1.5 border border-slate-700"
                   />
                   <span className="text-slate-400">Günlük Yevmiye</span>
@@ -221,9 +242,12 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 </div>
                 <input
                   type="number"
+                  inputMode="decimal"
                   step="100"
                   value={tisConfig.minimumWageGross}
                   onChange={(e) => updateField('minimumWageGross', parseFloat(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   className="w-32 bg-slate-900 text-xs text-right font-bold text-emerald-400 rounded px-2.5 py-1.5 border border-slate-700"
                 />
               </div>
@@ -237,9 +261,12 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 </div>
                 <input
                   type="number"
+                  inputMode="decimal"
                   step="0.5"
                   value={tisConfig.sgkCeilingMultiplier}
                   onChange={(e) => updateField('sgkCeilingMultiplier', parseFloat(e.target.value) || 7.5)}
+                  onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   className="w-20 bg-slate-900 text-xs text-center font-bold text-slate-200 rounded px-2 py-1.5 border border-slate-700"
                 />
               </div>
@@ -251,9 +278,12 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 </div>
                 <input
                   type="number"
+                  inputMode="decimal"
                   step="10"
                   value={tisConfig.foodAidDailyExemption}
                   onChange={(e) => updateField('foodAidDailyExemption', parseFloat(e.target.value) || 0)}
+                  onFocus={e => e.target.select()}
+                  onClick={e => (e.target as HTMLInputElement).select()}
                   className="w-24 bg-slate-900 text-xs text-right font-bold text-slate-200 rounded px-2.5 py-1.5 border border-slate-700"
                 />
               </div>
@@ -308,9 +338,12 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                     ) : (
                       <input
                         type="number"
+                        inputMode="decimal"
                         step="1000"
                         value={bracket.limit}
                         onChange={(e) => updateTaxBracket(idx, 'limit', parseFloat(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-36 bg-slate-900 text-xs text-right font-mono font-bold text-slate-200 rounded px-2.5 py-1 border border-slate-700"
                       />
                     )}

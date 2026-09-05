@@ -1,7 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BordroData } from '../types';
-import { formatCurrency, parseCurrency } from '../utils/bordroEngine';
+import {
+  formatCurrency,
+  parseCurrency,
+  autoAdjustTaxBracketForBordro
+} from '../utils/bordroEngine';
 
 interface StatutorySectionProps {
   bordro: BordroData;
@@ -12,6 +16,7 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
   bordro,
   onChange
 }) => {
+  const taxAdjustment = autoAdjustTaxBracketForBordro(bordro);
   const effectiveRate =
     bordro.aylikGlrVM > 0
       ? ((bordro.gelirVergisi / bordro.aylikGlrVM) * 100).toFixed(1)
@@ -35,9 +40,11 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="calistigiGun"
               name="calistigiGun"
               type="text"
+              inputMode="decimal"
               placeholder="0"
               defaultValue={bordro.calistigiGun > 0 ? formatCurrency(bordro.calistigiGun) : ''}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               onBlur={e => onChange({ calistigiGun: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
@@ -56,9 +63,11 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="sskGunu"
               name="sskGunu"
               type="text"
+              inputMode="decimal"
               placeholder="0"
               defaultValue={bordro.sskGunu > 0 ? formatCurrency(bordro.sskGunu) : ''}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               onBlur={e => onChange({ sskGunu: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
@@ -179,9 +188,11 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="yillikGlrVM"
               name="yillikGlrVM"
               type="text"
+              inputMode="decimal"
               placeholder="0,00"
               defaultValue={bordro.yillikGlrVM > 0 ? formatCurrency(bordro.yillikGlrVM) : ''}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               onBlur={e => onChange({ yillikGlrVM: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
@@ -247,9 +258,32 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               />
             </div>
           </div>
-          <div className="flex justify-between items-center text-[10px] text-indigo-900 px-0.5 font-medium">
-            <span>Efektif Oran:</span>
-            <span className="font-bold">%{effectiveRate}</span>
+          <div className="flex justify-between items-center text-[10px] text-indigo-900 px-0.5 font-medium flex-wrap gap-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span>Efektif: <strong className="font-bold">%{effectiveRate}</strong></span>
+              {bordro.vergiDilimModu === 'oto' && (
+                <span
+                  className={`text-[9px] px-1.5 py-0.2 rounded font-bold transition-colors ${
+                    taxAdjustment.isBracketCrossed
+                      ? 'bg-amber-200 text-amber-950 border border-amber-400 shadow-2xs'
+                      : 'bg-indigo-200/90 text-indigo-950 border border-indigo-300'
+                  }`}
+                  title={taxAdjustment.summary}
+                >
+                  {taxAdjustment.isBracketCrossed
+                    ? `Dilim: ${taxAdjustment.bracketBreakdown.map(b => b.ratePercent).join(' ➔ ')}`
+                    : `Dilim: %${Math.round(taxAdjustment.marginalRate * 100)}`}
+                </span>
+              )}
+            </div>
+            {bordro.vergiDilimModu === 'oto' && taxAdjustment.minWageExemption > 0 && (
+              <span
+                className="text-[9px] text-emerald-800 font-semibold cursor-help"
+                title={`7349 Sayılı Kanun Asgari Ücret Vergi İstisnası (${taxAdjustment.monthIndex}. Ay): ${formatCurrency(taxAdjustment.minWageExemption)} ₺`}
+              >
+                İstisna: {formatCurrency(taxAdjustment.minWageExemption)} ₺
+              </span>
+            )}
           </div>
         </div>
 
@@ -351,9 +385,11 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
               id="mahsupFark"
               name="mahsupFark"
               type="text"
+              inputMode="decimal"
               placeholder="0,00"
               defaultValue={bordro.mahsupFark !== 0 ? formatCurrency(bordro.mahsupFark) : ''}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               onBlur={e => onChange({ mahsupFark: parseCurrency(e.target.value) })}
               className="w-full text-xs font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />

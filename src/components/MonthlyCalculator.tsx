@@ -221,9 +221,12 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-medium text-slate-300 mb-1">T.C. Kimlik No</label>
                     <input
                       type="text"
+                      inputMode="numeric"
                       maxLength={11}
                       value={employee.tcNo}
                       onChange={(e) => updateField('tcNo', e.target.value)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-950 text-xs text-slate-100 rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-emerald-500"
                     />
                   </div>
@@ -291,10 +294,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <div className="relative">
                         <input
                           type="number"
+                          inputMode="decimal"
                           step="0.01"
                           min="0"
                           value={employee.baseDailyWage}
                           onChange={(e) => updateField('baseDailyWage', parseFloat(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          onClick={e => (e.target as HTMLInputElement).select()}
                           className="w-full bg-slate-900 text-sm font-bold text-white rounded-lg pl-8 pr-4 py-2.5 border border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-400"
                         />
                         <span className="absolute left-3 top-2.5 text-emerald-400 font-bold text-sm">₺</span>
@@ -308,10 +314,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <div className="relative">
                         <input
                           type="number"
+                          inputMode="decimal"
                           step="0.01"
                           min="0"
                           value={employee.baseMonthlyGross}
                           onChange={(e) => updateField('baseMonthlyGross', parseFloat(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          onClick={e => (e.target as HTMLInputElement).select()}
                           className="w-full bg-slate-900 text-sm font-bold text-white rounded-lg pl-8 pr-4 py-2.5 border border-emerald-500/60 focus:outline-none focus:ring-1 focus:ring-emerald-400"
                         />
                         <span className="absolute left-3 top-2.5 text-emerald-400 font-bold text-sm">₺</span>
@@ -334,10 +343,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <label className="block text-[11px] text-slate-400 mb-0.5">Fiili Çalışma</label>
                       <input
                         type="number"
+                        inputMode="numeric"
                         min="0"
                         max="31"
                         value={employee.workedDays}
                         onChange={(e) => updateField('workedDays', parseInt(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-full bg-slate-900 text-xs text-center text-slate-200 rounded px-2 py-1.5 border border-slate-700"
                       />
                     </div>
@@ -345,10 +357,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <label className="block text-[11px] text-slate-400 mb-0.5">Hafta Tatili</label>
                       <input
                         type="number"
+                        inputMode="numeric"
                         min="0"
                         max="10"
                         value={employee.weeklyRestDays}
                         onChange={(e) => updateField('weeklyRestDays', parseInt(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-full bg-slate-900 text-xs text-center text-slate-200 rounded px-2 py-1.5 border border-slate-700"
                       />
                     </div>
@@ -356,10 +371,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <label className="block text-[11px] text-slate-400 mb-0.5">Ücretli İzin</label>
                       <input
                         type="number"
+                        inputMode="numeric"
                         min="0"
                         max="31"
                         value={employee.paidLeaveDays}
                         onChange={(e) => updateField('paidLeaveDays', parseInt(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-full bg-slate-900 text-xs text-center text-slate-200 rounded px-2 py-1.5 border border-slate-700"
                       />
                     </div>
@@ -367,10 +385,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <label className="block text-[11px] text-slate-400 mb-0.5">Toplam Gün</label>
                       <input
                         type="number"
+                        inputMode="numeric"
                         min="0"
                         max="31"
                         value={employee.totalPayableDays}
                         onChange={(e) => updateField('totalPayableDays', parseInt(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-full bg-slate-900 text-xs text-center font-bold text-emerald-400 rounded px-2 py-1.5 border border-emerald-500/50"
                       />
                     </div>
@@ -415,10 +436,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <label className="block text-xs text-slate-400 mb-1">Kıdem Yılı</label>
                         <input
                           type="number"
+                          inputMode="numeric"
                           min="0"
                           max="50"
                           value={employee.seniorityYears}
                           onChange={(e) => updateField('seniorityYears', parseInt(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          onClick={e => (e.target as HTMLInputElement).select()}
                           className="w-full bg-slate-900 text-xs text-slate-100 rounded-lg px-3 py-2 border border-slate-700"
                         />
                       </div>
@@ -426,9 +450,12 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <label className="block text-xs text-slate-400 mb-1">Yıl Başına Günlük Ek (₺)</label>
                         <input
                           type="number"
+                          inputMode="decimal"
                           step="0.5"
                           value={employee.customSeniorityPayDaily ?? tisConfig.seniorityPayPerYear}
                           onChange={(e) => updateField('customSeniorityPayDaily', parseFloat(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          onClick={e => (e.target as HTMLInputElement).select()}
                           className="w-full bg-slate-900 text-xs text-slate-100 rounded-lg px-3 py-2 border border-slate-700"
                         />
                       </div>
@@ -486,10 +513,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <label className="block text-[11px] text-slate-400 mb-1">Özel Gün Sayısı Gir:</label>
                         <input
                           type="number"
+                          inputMode="decimal"
                           min="1"
                           max="120"
                           value={employee.bonusDaysOverride ?? 15}
                           onChange={(e) => updateField('bonusDaysOverride', parseFloat(e.target.value) || 0)}
+                          onFocus={e => e.target.select()}
+                          onClick={e => (e.target as HTMLInputElement).select()}
                           className="w-full bg-slate-900 text-xs text-slate-100 rounded-lg px-3 py-2 border border-slate-700"
                         />
                       </div>
@@ -520,10 +550,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                   <div className="flex items-center gap-3">
                     <input
                       type="number"
+                      inputMode="decimal"
                       min="0"
                       max="100"
                       value={employee.normalOvertimeHours}
                       onChange={(e) => updateField('normalOvertimeHours', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-20 bg-slate-900 text-xs text-center font-bold text-slate-100 rounded-lg py-2 border border-slate-700"
                     />
                     <span className="text-xs font-semibold text-emerald-400 w-24 text-right">
@@ -543,10 +576,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                   <div className="flex items-center gap-3">
                     <input
                       type="number"
+                      inputMode="decimal"
                       min="0"
                       max="8"
                       value={employee.weekendOvertimeDays}
                       onChange={(e) => updateField('weekendOvertimeDays', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-20 bg-slate-900 text-xs text-center font-bold text-slate-100 rounded-lg py-2 border border-slate-700"
                     />
                     <span className="text-xs font-semibold text-emerald-400 w-24 text-right">
@@ -566,10 +602,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                   <div className="flex items-center gap-3">
                     <input
                       type="number"
+                      inputMode="decimal"
                       min="0"
                       max="15"
                       value={employee.holidayOvertimeDays}
                       onChange={(e) => updateField('holidayOvertimeDays', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-20 bg-slate-900 text-xs text-center font-bold text-slate-100 rounded-lg py-2 border border-slate-700"
                     />
                     <span className="text-xs font-semibold text-emerald-400 w-24 text-right">
@@ -589,10 +628,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                   <div className="flex items-center gap-3">
                     <input
                       type="number"
+                      inputMode="decimal"
                       min="0"
                       max="200"
                       value={employee.nightShiftHours}
                       onChange={(e) => updateField('nightShiftHours', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-20 bg-slate-900 text-xs text-center font-bold text-slate-100 rounded-lg py-2 border border-slate-700"
                     />
                     <span className="text-xs font-semibold text-emerald-400 w-24 text-right">
@@ -626,8 +668,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <label className="block text-[11px] text-slate-400 mb-0.5">Günlük Tutar (₺)</label>
                       <input
                         type="number"
+                        inputMode="decimal"
                         value={employee.foodDailyAmount}
                         onChange={(e) => updateField('foodDailyAmount', parseFloat(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                       />
                     </div>
@@ -635,8 +680,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <label className="block text-[11px] text-slate-400 mb-0.5">Yemek Günü Sayısı</label>
                       <input
                         type="number"
+                        inputMode="numeric"
                         value={employee.foodDays}
                         onChange={(e) => updateField('foodDays', parseInt(e.target.value) || 0)}
+                        onFocus={e => e.target.select()}
+                        onClick={e => (e.target as HTMLInputElement).select()}
                         className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                       />
                     </div>
@@ -652,8 +700,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Ulaşım / Yol (₺/Ay)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.transportMonthlyAmount}
                       onChange={(e) => updateField('transportMonthlyAmount', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -661,8 +712,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Yakacak Yardımı (₺/Ay)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.fuelAidMonthly}
                       onChange={(e) => updateField('fuelAidMonthly', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -688,10 +742,13 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Çocuk Sayısı</label>
                     <input
                       type="number"
+                      inputMode="numeric"
                       min="0"
                       max="10"
                       value={employee.childCount}
                       onChange={(e) => updateField('childCount', parseInt(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -703,8 +760,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Giyim / Hijyen (₺)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.clothingSocialAid}
                       onChange={(e) => updateField('clothingSocialAid', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -712,8 +772,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Sorumluluk/Kasa (₺)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.responsibilityRiskBonus}
                       onChange={(e) => updateField('responsibilityRiskBonus', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -724,8 +787,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Bayram Harçlığı (₺)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.religiousHolidayBonus}
                       onChange={(e) => updateField('religiousHolidayBonus', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -733,8 +799,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Öğrenim Yardımı (₺)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.educationAid}
                       onChange={(e) => updateField('educationAid', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -836,8 +905,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">İcra Kesintisi (₺)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.courtGarnishment}
                       onChange={(e) => updateField('courtGarnishment', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -845,8 +917,11 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <label className="block text-xs font-semibold text-slate-200 mb-1">Maaş Avansı (₺)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={employee.salaryAdvance}
                       onChange={(e) => updateField('salaryAdvance', parseFloat(e.target.value) || 0)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       className="w-full bg-slate-900 text-xs text-slate-100 rounded px-2.5 py-1.5 border border-slate-700"
                     />
                   </div>
@@ -864,9 +939,12 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                   </div>
                   <input
                     type="number"
+                    inputMode="decimal"
                     step="100"
                     value={employee.cumulativeTaxBaseStart}
                     onChange={(e) => updateField('cumulativeTaxBaseStart', parseFloat(e.target.value) || 0)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-full bg-slate-900 text-sm font-semibold text-white rounded-lg px-3 py-2 border border-slate-700 focus:border-amber-400"
                   />
                   <p className="text-[11px] text-slate-400">

@@ -23,6 +23,201 @@ export function calcTaxBrackets(amount: number): number {
   return tax;
 }
 
+export interface TaxBracketBreakdownItem {
+  bracketIndex: number;
+  rate: number;
+  ratePercent: string;
+  limit: number;
+  taxableAmount: number;
+  taxAmount: number;
+}
+
+export interface CumulativeTaxAdjustmentResult {
+  /** Önceki aylardan devreden kümülatif gelir vergisi matrahı */
+  cumulativeBasePrior: number;
+  /** Cari ayın gelir vergisi matrahı */
+  monthlyTaxableBase: number;
+  /** Bu ay eklenince oluşan yeni kümülatif matrah */
+  cumulativeBaseAfter: number;
+  /** Kademeli dilim hesabına göre cari ayın brüt gelir vergisi */
+  grossTax: number;
+  /** Takvim ayı kümülatif asgari ücret vergi istisnası tutarı */
+  minWageExemption: number;
+  /** Cari ay için tahakkuk eden net gelir vergisi */
+  netTax: number;
+  /** Bu ay sonu ulaşılan marjinal vergi dilimi (örn: 0.27) */
+  marginalRate: number;
+  /** Efektif vergi oranı (Net vergi / Aylık matrah) */
+  effectiveRate: number;
+  /** Matrahın dilimler arasındaki ayrıntılı dağılımı */
+  bracketBreakdown: TaxBracketBreakdownItem[];
+  /** Vergi diliminin cari ay içinde değişip değişmediği (dilim atlama) */
+  isBracketCrossed: boolean;
+  /** Ay numarası (1-12) */
+  monthIndex: number;
+  /** Hesaplama özeti açıklaması */
+  summary: string;
+}
+
+/**
+ * Belirli bir kümülatif matrah için geçerli marjinal vergi oranını döndürür
+ */
+export function getMarginalRateForAmount(amount: number, brackets = TAX_BRACKETS_2026): number {
+  if (amount <= 0) return brackets[0]?.rate ?? 0.15;
+  for (const bracket of brackets) {
+    if (amount <= bracket.limit) {
+      return bracket.rate;
+    }
+  }
+  return brackets[brackets.length - 1].rate;
+}
+
+/**
+ * Automatically adjusts the tax bracket calculation in the bordro engine
+ * based on cumulative monthly income to ensure annual accuracy.
+ *
+ * 193 Sayılı Gelir Vergisi Kanunu uyarınca ücretlilerin gelir vergisi, takvim yılı
+ * başından itibaren kümülatif olarak toplanan gelir vergisi matrahı üzerinden artan oranlı
+ * (progresif) tarifeye göre hesaplanır.
+ *
+ * Bu yardımcı fonksiyon:
+ * 1. Çalışanın yıl başından devreden kümülatif matrahı ile cari ay matrahını birleştirir.
+ * 2. Ay içerisinde dilim sınırını aşan kısımları (örn: %15'ten %20'ye veya %20'den %27'ye)
+ *    otomatik olarak tespit edip doğru dilim oranlarıyla ayrı ayrı vergilendirir.
+ * 3. 7349 sayılı Kanun gereğince ilgili ayın kümülatif asgari ücret vergi istisnasını
+ *    aylık dilim hassasiyetiyle düşerek yıllık bazda kuruşu kuruşuna kesin doğruluk (annual accuracy) sağlar.
+ * 4. Marjinal oran, efektif oran ve ayrıntılı dilim dökümünü üretir.
+ */
+export function adjustTaxBracketByCumulativeIncome(
+  cumulativeBasePrior: number,
+  monthlyTaxableBase: number,
+  monthIndex: number = 1,
+  monthlyMinWageBase: number = 28075.53,
+  brackets = TAX_BRACKETS_2026
+): CumulativeTaxAdjustmentResult {
+  const prior = Math.max(0, cumulativeBasePrior || 0);
+  const current = Math.max(0, monthlyTaxableBase || 0);
+  const totalCumAfter = Math.round((prior + current) * 100) / 100;
+  const month = Math.max(1, Math.min(12, monthIndex || 1));
+
+  if (current <= 0) {
+    const currentMarginal = getMarginalRateForAmount(prior, brackets);
+    return {
+      cumulativeBasePrior: prior,
+      monthlyTaxableBase: 0,
+      cumulativeBaseAfter: prior,
+      grossTax: 0,
+      minWageExemption: 0,
+      netTax: 0,
+      marginalRate: currentMarginal,
+      effectiveRate: 0,
+      bracketBreakdown: [],
+      isBracketCrossed: false,
+      monthIndex: month,
+      summary: 'Aylık vergi matrahı 0 TL olduğu için gelir vergisi doğmamıştır.'
+    };
+  }
+
+  // 1. Kümülatif dilim bazında cari ayın brüt vergisi
+  const grossPrior = calcTaxBrackets(prior);
+  const grossAfter = calcTaxBrackets(totalCumAfter);
+  const grossTax = Math.max(0, Math.round((grossAfter - grossPrior) * 100) / 100);
+
+  // 2. Kümülatif asgari ücret istisnası (7349 Sayılı Kanun)
+  const minWagePrev = Math.max(0, (month - 1) * monthlyMinWageBase);
+  const minWageCurr = Math.max(0, month * monthlyMinWageBase);
+  const minWageExemption = Math.max(
+    0,
+    Math.round((calcTaxBrackets(minWageCurr) - calcTaxBrackets(minWagePrev)) * 100) / 100
+  );
+
+  // 3. Net gelir vergisi
+  const netTax = Math.max(0, Math.round((grossTax - minWageExemption) * 100) / 100);
+
+  // 4. Dilim dökümü (Dilim sınırlarının aşılması durumunda matrahın kademelere ayrılması)
+  const breakdown: TaxBracketBreakdownItem[] = [];
+  let prevLimit = 0;
+  const initialMarginal = getMarginalRateForAmount(prior, brackets);
+  let activeMarginal = initialMarginal;
+
+  for (let i = 0; i < brackets.length; i++) {
+    const bracket = brackets[i];
+    const bracketStart = prevLimit;
+    const bracketEnd = bracket.limit;
+
+    // Matrahın bu dilime denk gelen kısmı:
+    // Dilim içindeki üst sınır = min(totalCumAfter, bracketEnd)
+    // Dilim içindeki alt sınır = max(prior, bracketStart)
+    const upper = Math.min(totalCumAfter, bracketEnd);
+    const lower = Math.max(prior, bracketStart);
+    const taxableInBracket = Math.max(0, upper - lower);
+
+    if (taxableInBracket > 0.001) {
+      const roundedTaxable = Math.round(taxableInBracket * 100) / 100;
+      const taxInBracket = Math.round(roundedTaxable * bracket.rate * 100) / 100;
+      breakdown.push({
+        bracketIndex: i + 1,
+        rate: bracket.rate,
+        ratePercent: `%${Math.round(bracket.rate * 100)}`,
+        limit: bracket.limit,
+        taxableAmount: roundedTaxable,
+        taxAmount: taxInBracket
+      });
+      activeMarginal = bracket.rate;
+    } else if (totalCumAfter <= bracketEnd && totalCumAfter > bracketStart) {
+      activeMarginal = bracket.rate;
+    }
+
+    prevLimit = bracket.limit;
+  }
+
+  const isBracketCrossed = breakdown.length > 1;
+  const effectiveRate = current > 0 ? Math.round((netTax / current) * 10000) / 100 : 0;
+
+  const summary = isBracketCrossed
+    ? `Kümülatif matrah (${formatCurrency(prior)} ₺ ➔ ${formatCurrency(totalCumAfter)} ₺) dilim sınırını aşmış ve ${breakdown.map(b => `${formatCurrency(b.taxableAmount)} ₺ @ ${b.ratePercent}`).join(', ')} şeklinde kademeli olarak hesaplanmıştır.`
+    : `Kümülatif matrah (${formatCurrency(totalCumAfter)} ₺) %${Math.round(activeMarginal * 100)} vergi diliminde yer almaktadır.`;
+
+  return {
+    cumulativeBasePrior: prior,
+    monthlyTaxableBase: current,
+    cumulativeBaseAfter: totalCumAfter,
+    grossTax,
+    minWageExemption,
+    netTax,
+    marginalRate: activeMarginal,
+    effectiveRate,
+    bracketBreakdown: breakdown,
+    isBracketCrossed,
+    monthIndex: month,
+    summary
+  };
+}
+
+/**
+ * Bordro nesnesi için kümülatif aylık gelire göre vergi dilimini otomatik olarak ayarlar
+ */
+export function autoAdjustTaxBracketForBordro(bordro: BordroData): CumulativeTaxAdjustmentResult {
+  return adjustTaxBracketByCumulativeIncome(
+    bordro.yillikGlrVM,
+    bordro.aylikGlrVM,
+    bordro.ayNo || 1,
+    bordro.asgariUcretMatrah || 28075.53,
+    TAX_BRACKETS_2026
+  );
+}
+
+/**
+ * Ay numarası ve ortalama aylık vergi matrahına göre yıllık kümülatif matrahı tahmin eder
+ */
+export function estimateCumulativeIncomeForMonth(
+  monthIndex: number,
+  monthlyEstimatedIncome: number
+): number {
+  const m = Math.max(1, Math.min(12, monthIndex));
+  return Math.round((m - 1) * Math.max(0, monthlyEstimatedIncome) * 100) / 100;
+}
+
 export function parseCurrency(val: unknown): number {
   if (val == null || val === '') return 0;
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
@@ -285,12 +480,13 @@ export function calculateBordro(bordro: BordroData): BordroData {
     if (isGazi && Math.abs(aylikGlrVM - 113876.71) < 1 && Math.abs(bordro.yillikGlrVM - 958087.45) < 2) {
       gelirVergisi = 25131.61;
     } else {
-      const cumWithThis = bordro.yillikGlrVM + aylikGlrVM;
-      const grossTax = Math.max(0, calcTaxBrackets(cumWithThis) - calcTaxBrackets(bordro.yillikGlrVM));
-      const minWagePrev = (bordro.ayNo - 1) * bordro.asgariUcretMatrah;
-      const minWageCurr = bordro.ayNo * bordro.asgariUcretMatrah;
-      const minWageExempt = Math.max(0, calcTaxBrackets(minWageCurr) - calcTaxBrackets(minWagePrev));
-      gelirVergisi = Math.max(0, Math.round((grossTax - minWageExempt) * 100) / 100);
+      const taxAdj = adjustTaxBracketByCumulativeIncome(
+        bordro.yillikGlrVM,
+        aylikGlrVM,
+        bordro.ayNo,
+        bordro.asgariUcretMatrah
+      );
+      gelirVergisi = taxAdj.netTax;
     }
   } else {
     const fixedRate = parseFloat(bordro.vergiDilimModu) / 100;

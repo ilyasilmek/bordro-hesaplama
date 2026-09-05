@@ -469,8 +469,11 @@ export const SalaryReportModal: React.FC<SalaryReportModalProps> = ({
                   <input
                     id="input-enter-report-pin"
                     type={showPassword ? 'text' : 'password'}
+                    inputMode="numeric"
                     value={enteredPin}
                     onChange={e => setEnteredPin(e.target.value)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     placeholder="Şifrenizi girin"
                     className="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 pr-10 outline-none font-mono tracking-wider"
                     autoFocus
@@ -557,8 +560,11 @@ export const SalaryReportModal: React.FC<SalaryReportModalProps> = ({
                   <div className="relative">
                     <input
                       type={showCurrentPin ? 'text' : 'password'}
+                      inputMode="numeric"
                       value={currentPin}
                       onChange={e => setCurrentPin(e.target.value)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       placeholder="Şu anki geçerli şifreniz"
                       className="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-3 py-2 text-white pr-9 outline-none font-mono"
                       autoFocus
@@ -578,8 +584,11 @@ export const SalaryReportModal: React.FC<SalaryReportModalProps> = ({
                   <div className="relative">
                     <input
                       type={showNewPin ? 'text' : 'password'}
+                      inputMode="numeric"
                       value={newPin}
                       onChange={e => setNewPin(e.target.value)}
+                      onFocus={e => e.target.select()}
+                      onClick={e => (e.target as HTMLInputElement).select()}
                       placeholder="Yeni şifreniz"
                       className="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-3 py-2 text-white pr-9 outline-none font-mono"
                     />
@@ -597,8 +606,11 @@ export const SalaryReportModal: React.FC<SalaryReportModalProps> = ({
                   <label className="block text-slate-300 font-semibold mb-1">Yeni Şifre Tekrarı</label>
                   <input
                     type="password"
+                    inputMode="numeric"
                     value={confirmNewPin}
                     onChange={e => setConfirmNewPin(e.target.value)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     placeholder="Yeni şifrenizi tekrar girin"
                     className="w-full bg-slate-950 border border-slate-700 focus:border-emerald-500 rounded px-3 py-2 text-white outline-none font-mono"
                   />

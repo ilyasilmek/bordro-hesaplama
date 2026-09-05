@@ -66,9 +66,12 @@ export const RetroactiveDifference: React.FC<RetroactiveDifferenceProps> = ({
             </label>
             <input
               type="number"
+              inputMode="decimal"
               step="10"
               value={oldDailyWage}
               onChange={(e) => setOldDailyWage(parseFloat(e.target.value) || 0)}
+              onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full bg-slate-900 text-sm font-bold text-slate-200 rounded-lg px-3 py-2 border border-slate-700"
             />
             <span className="text-[11px] text-slate-500 mt-1 block">Aylık: {formatTRY(oldDailyWage * 30)}</span>
@@ -80,9 +83,12 @@ export const RetroactiveDifference: React.FC<RetroactiveDifferenceProps> = ({
             </label>
             <input
               type="number"
+              inputMode="decimal"
               step="10"
               value={newDailyWage}
               onChange={(e) => setNewDailyWage(parseFloat(e.target.value) || 0)}
+              onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full bg-slate-900 text-sm font-bold text-emerald-300 rounded-lg px-3 py-2 border border-emerald-500/60"
             />
             <span className="text-[11px] text-emerald-400/80 mt-1 block">Aylık: {formatTRY(newDailyWage * 30)}</span>

@@ -67,8 +67,11 @@ export const ZamModal: React.FC<ZamModalProps> = ({
               <input
                 id="modal-zam-orani"
                 type="text"
+                inputMode="decimal"
                 value={rateStr}
                 onChange={e => setRateStr(e.target.value)}
+                onFocus={e => e.target.select()}
+                onClick={e => (e.target as HTMLInputElement).select()}
                 placeholder="Örn: 15,5"
                 className="w-28 text-sm font-bold bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-600"
               />
@@ -111,8 +114,11 @@ export const ZamModal: React.FC<ZamModalProps> = ({
                   <input
                     id="modal-eski-gun"
                     type="text"
+                    inputMode="decimal"
                     value={oldDaysStr}
                     onChange={e => setOldDaysStr(e.target.value)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-full text-xs bg-white border border-slate-300 rounded px-2 py-1 text-right"
                   />
                 </div>
@@ -123,8 +129,11 @@ export const ZamModal: React.FC<ZamModalProps> = ({
                   <input
                     id="modal-yeni-gun"
                     type="text"
+                    inputMode="decimal"
                     value={newDaysStr}
                     onChange={e => setNewDaysStr(e.target.value)}
+                    onFocus={e => e.target.select()}
+                    onClick={e => (e.target as HTMLInputElement).select()}
                     className="w-full text-xs bg-white border border-slate-300 rounded px-2 py-1 text-right"
                   />
                 </div>

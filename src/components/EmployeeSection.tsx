@@ -119,10 +119,12 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="kidemYili"
               name="kidemYili"
               type="number"
+              inputMode="numeric"
               placeholder="0"
               value={bordro.kidemYili || ''}
               onChange={e => onChange({ kidemYili: parseInt(e.target.value, 10) || 0 })}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
@@ -134,6 +136,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="hzmZammiYil"
               name="hzmZammiYil"
               type="number"
+              inputMode="numeric"
               placeholder="0"
               value={bordro.hzmZammiYil || ''}
               onChange={e => {
@@ -144,6 +147,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
                 onChange({ hzmZammiYil: val, earnings: updatedEarnings });
               }}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
@@ -169,10 +173,12 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="saatUcr"
               name="saatUcr"
               type="text"
+              inputMode="decimal"
               placeholder="0,000000"
               defaultValue={bordro.saatUcr > 0 ? formatCurrency(bordro.saatUcr, 6) : ''}
               onBlur={e => handleSaatUcrBlur(e.target.value)}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-bold text-right text-sky-950 bg-white border border-sky-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
@@ -190,10 +196,12 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="emkZam"
               name="emkZam"
               type="text"
+              inputMode="decimal"
               placeholder="0,000000"
               defaultValue={bordro.emkZam > 0 ? formatCurrency(bordro.emkZam, 6) : ''}
               onBlur={e => handleEmkZamBlur(e.target.value)}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
@@ -211,10 +219,12 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="brtAylk"
               name="brtAylk"
               type="text"
+              inputMode="decimal"
               placeholder="0,00"
               defaultValue={bordro.brtAylk > 0 ? formatCurrency(bordro.brtAylk) : ''}
               onBlur={e => onChange({ brtAylk: parseCurrency(e.target.value) })}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
@@ -232,10 +242,12 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="kdmZam"
               name="kdmZam"
               type="text"
+              inputMode="decimal"
               placeholder="0,00"
               defaultValue={bordro.kdmZam > 0 ? formatCurrency(bordro.kdmZam) : ''}
               onBlur={e => onChange({ kdmZam: parseCurrency(e.target.value) })}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
@@ -253,10 +265,12 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
               id="hastGun"
               name="hastGun"
               type="text"
+              inputMode="decimal"
               placeholder="0"
               defaultValue={bordro.hastGun > 0 ? formatCurrency(bordro.hastGun) : ''}
               onBlur={e => onChange({ hastGun: parseCurrency(e.target.value) })}
               onFocus={e => e.target.select()}
+              onClick={e => (e.target as HTMLInputElement).select()}
               className="w-full text-xs 2xl:text-sm font-semibold text-right bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/40 font-mono transition-all shadow-2xs"
             />
           </div>
