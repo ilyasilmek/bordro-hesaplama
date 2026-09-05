@@ -93,7 +93,7 @@ export function calculateEarningItem(
     case 'mesai200':
       return item.hours * totalBase * 2.0;
     case 'gms24':
-      return item.hours * (15067.12 / 155);
+      return item.hours * totalBase * 0.24;
     case 'iase':
       return item.hours * iaseKatsayi;
     case 'hizmet':
