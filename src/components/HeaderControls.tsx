@@ -13,7 +13,8 @@ import {
   Clock,
   Award,
   User,
-  Accessibility
+  Accessibility,
+  BarChart3
 } from 'lucide-react';
 import { BordroData } from '../types';
 import { MONTHS_TABLE } from '../utils/bordroEngine';
@@ -26,6 +27,7 @@ interface HeaderControlsProps {
   onZero: () => void;
   onRecalculate?: () => void;
   onOpenZamModal: () => void;
+  onOpenReportModal?: () => void;
   onOpenSavedModal?: () => void;
   onExportJSON: () => void;
   onImportJSON: () => void;
@@ -190,6 +192,19 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
             Sıfırla
           </button>
+
+          {onOpenSavedModal && (
+            <button
+              id="btn-saved-bordrolar"
+              type="button"
+              onClick={onOpenSavedModal}
+              className="px-2.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold rounded shadow-xs transition flex items-center gap-1 cursor-pointer"
+              title="Kaydedilmiş bordroları ve hazır senaryoları görüntüle"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-slate-600" />
+              <span>Kayıtlılar</span>
+            </button>
+          )}
 
           <button
             id="btn-open-zam-modal"

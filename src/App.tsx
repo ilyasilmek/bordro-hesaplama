@@ -1,4 +1,12 @@
 import React, { useState, useRef } from 'react';
+import {
+  BarChart3,
+  FolderOpen,
+  TrendingUp,
+  Sparkles,
+  FileSpreadsheet,
+  Award
+} from 'lucide-react';
 import { BordroData } from './types';
 import {
   DEFAULT_TCDD_BORDRO,
@@ -11,6 +19,7 @@ import { EarningsAndDeductionsSection } from './components/EarningsAndDeductions
 import { StatutorySection } from './components/StatutorySection';
 import { ZamModal } from './components/ZamModal';
 import { SavedBordrolarModal } from './components/SavedBordrolarModal';
+import { SalaryReportModal } from './components/SalaryReportModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { OfficialPrintableSlip } from './components/OfficialPrintableSlip';
 
@@ -18,6 +27,7 @@ export function App() {
   const [bordro, setBordro] = useState<BordroData>(() => calculateBordro(DEFAULT_TCDD_BORDRO));
   const [isZamModalOpen, setIsZamModalOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (updates: Partial<BordroData>) => {
@@ -192,6 +202,66 @@ export function App() {
         className="hidden"
       />
 
+      {/* Üst Kurumsal Navigasyon ve Birincil Rapor Başlığı (Her Ekranda Sabit ve Belirgin) */}
+      <div className="w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] mb-3 no-print">
+        <div className="bg-slate-900 text-white rounded-xl px-4 py-3 shadow-md border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-600 text-white font-bold text-xl shadow-inner shrink-0">
+              ₺
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-sm sm:text-base tracking-tight text-white">
+                  TCDD TAŞIMACILIK A.Ş. BORDRO SİSTEMİ
+                </span>
+                <span className="bg-emerald-950 text-emerald-300 border border-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded">
+                  2026 Mevzuatı
+                </span>
+              </div>
+              <p className="text-slate-400 text-xs mt-0.5">
+                31. Dönem TİS • 4/a Sürekli İşçi Aylık Maaş ve Kesinti Robotu
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {/* Tek ve Net Rapor Butonu */}
+            <button
+              id="top-nav-btn-open-report"
+              type="button"
+              onClick={() => setIsReportModalOpen(true)}
+              className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs border border-emerald-500/50"
+              title="Geçmiş Maaşlar, Toplam Gelir-Gider ve Vergi Raporu (Şifreli: 1510)"
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-emerald-200" />
+              <span>Rapor</span>
+            </button>
+
+            <button
+              id="top-nav-btn-saved"
+              type="button"
+              onClick={() => setIsSavedModalOpen(true)}
+              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              title="Kaydedilmiş bordrolar"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-slate-400" />
+              <span>Kayıtlılar</span>
+            </button>
+
+            <button
+              id="top-nav-btn-zam"
+              type="button"
+              onClick={() => setIsZamModalOpen(true)}
+              className="px-3 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              title="TİS Zammı Simülatörü"
+            >
+              <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+              <span>TİS Zammı</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Ekrandaki Canlı Bordro Düzenleyici (Yazdırma sırasında gizlenir) */}
       <div id="interactive-editor-view" className="w-full flex flex-col items-center">
         {/* Action Bar & Document Top Controls */}
@@ -272,6 +342,14 @@ export function App() {
       <SavedBordrolarModal
         isOpen={isSavedModalOpen}
         onClose={() => setIsSavedModalOpen(false)}
+        currentBordro={bordro}
+        onLoadBordro={loaded => setBordro(calculateBordro(loaded))}
+      />
+
+      {/* Maaş, Gelir-Gider & Vergi Analiz Raporu Modal */}
+      <SalaryReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
         currentBordro={bordro}
         onLoadBordro={loaded => setBordro(calculateBordro(loaded))}
       />

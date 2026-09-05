@@ -8,6 +8,20 @@ export default defineConfig(() => {
   return {
     base: './',
     plugins: [
+      {
+        name: 'vite-hmr-ws-guard',
+        configureServer(server) {
+          if (!server.ws) {
+            server.ws = {
+              send: () => {},
+              close: () => {},
+              on: () => {},
+              off: () => {},
+              clients: new Set(),
+            } as any;
+          }
+        },
+      },
       react(),
       tailwindcss(),
       VitePWA({
@@ -90,8 +104,7 @@ export default defineConfig(() => {
           ],
         },
         devOptions: {
-          enabled: true,
-          type: 'module',
+          enabled: false,
         },
       }),
     ],
