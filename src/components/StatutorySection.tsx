@@ -99,17 +99,17 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
             </label>
             <span
               className={`no-print text-[8px] px-1 rounded font-semibold border ${
-                bordro.calisanStatusu === 'normal'
-                  ? 'bg-sky-100 text-sky-800 border-sky-300'
-                  : 'bg-indigo-100 text-indigo-800 border-indigo-300'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'bg-amber-100 text-amber-800 border-amber-300'
+                  : 'bg-sky-100 text-sky-800 border-sky-300'
               }`}
               title={
-                bordro.calisanStatusu === 'normal'
-                  ? '4/a Sürekli İşçi Standart Prim Oranı (%14: %9 MYÖ + %5 GSS)'
-                  : 'Gazi / Terörle Mücadele Özel Prim Oranı (%9)'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'Gazi / Terörle Mücadele Özel Prim Oranı (%9)'
+                  : '4/a Sürekli İşçi Standart Prim Oranı (%14: %9 MYÖ + %5 GSS)'
               }
             >
-              {bordro.calisanStatusu === 'normal' ? '%14 STD' : '%9 ÖZEL'}
+              {bordro.calisanStatusu === 'gazi' ? '%9 ÖZEL' : '%14 STD'}
             </span>
           </div>
           <div className="flex items-center w-36 2xl:w-44">
@@ -134,12 +134,12 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
             <span
               className="no-print text-[8px] bg-indigo-100 text-indigo-800 px-1 rounded font-semibold border border-indigo-200"
               title={
-                bordro.calisanStatusu === 'normal'
-                  ? 'Standart İşveren Prim Payı (%21.75: %11 MYÖ + %7.5 GSS + %3.25 Tehlike/KVS)'
-                  : 'İşveren Prim Payı (%14.25)'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'Gazi İşveren Prim Payı (%14.25)'
+                  : 'Standart İşveren Prim Payı (%21.75: %11 MYÖ + %7.5 GSS + %3.25 Tehlike/KVS)'
               }
             >
-              {bordro.calisanStatusu === 'normal' ? '%21.75' : '%14.25'}
+              {bordro.calisanStatusu === 'gazi' ? '%14.25' : '%21.75'}
             </span>
           </div>
           <div className="flex items-center w-36 2xl:w-44">
@@ -279,17 +279,17 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
             </label>
             <span
               className={`no-print text-[8px] px-1 rounded font-semibold border ${
-                bordro.calisanStatusu === 'normal'
-                  ? 'bg-sky-100 text-sky-800 border-sky-300'
-                  : 'bg-slate-200 text-slate-700 border-slate-300'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'bg-slate-200 text-slate-700 border-slate-300'
+                  : 'bg-sky-100 text-sky-800 border-sky-300'
               }`}
               title={
-                bordro.calisanStatusu === 'normal'
-                  ? 'Standart 4/a İşçi İşsizlik Sigortası Primi (%1)'
-                  : 'Terörle Mücadele / Gazi Kapsamında İşsizlik Primi Kesilmez'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'Terörle Mücadele / Gazi Kapsamında İşsizlik Primi Kesilmez'
+                  : 'Standart 4/a İşçi İşsizlik Sigortası Primi (%1)'
               }
             >
-              {bordro.calisanStatusu === 'normal' ? '%1 AKTİF' : 'MUAF'}
+              {bordro.calisanStatusu === 'gazi' ? 'MUAF' : '%1 AKTİF'}
             </span>
           </div>
           <div className="flex items-center w-36 2xl:w-44">
@@ -313,17 +313,17 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
             </label>
             <span
               className={`no-print text-[8px] px-1 rounded font-semibold border ${
-                bordro.calisanStatusu === 'normal'
-                  ? 'bg-sky-100 text-sky-800 border-sky-300'
-                  : 'bg-slate-200 text-slate-700 border-slate-300'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'bg-slate-200 text-slate-700 border-slate-300'
+                  : 'bg-sky-100 text-sky-800 border-sky-300'
               }`}
               title={
-                bordro.calisanStatusu === 'normal'
-                  ? 'Standart İşveren İşsizlik Sigortası Primi (%2)'
-                  : 'Terörle Mücadele / Gazi Kapsamında İşsizlik Primi Kesilmez'
+                bordro.calisanStatusu === 'gazi'
+                  ? 'Terörle Mücadele / Gazi Kapsamında İşsizlik Primi Kesilmez'
+                  : 'Standart İşveren İşsizlik Sigortası Primi (%2)'
               }
             >
-              {bordro.calisanStatusu === 'normal' ? '%2 AKTİF' : 'MUAF'}
+              {bordro.calisanStatusu === 'gazi' ? 'MUAF' : '%2 AKTİF'}
             </span>
           </div>
           <div className="flex items-center w-36 2xl:w-44">

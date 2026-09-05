@@ -99,6 +99,8 @@ export function calculateEarningItem(
       return item.hours * postabasiKatsayi;
     case 'gms24':
       return item.hours * totalBase * 0.24;
+    case 'gms22':
+      return item.hours * totalBase * 0.22;
     case 'iase':
       return item.hours * iaseKatsayi;
     case 'hizmet':
@@ -112,6 +114,8 @@ export function calculateEarningItem(
 
 export function calculateBordro(bordro: BordroData): BordroData {
   const isNormal = bordro.calisanStatusu === 'normal';
+  const isGazi = bordro.calisanStatusu === 'gazi';
+  const isEngelli = bordro.calisanStatusu === 'engelli';
   const postabasiKatsayi = bordro.postabasiSaatUcreti ?? 4.84;
   const postabasiBadge = `${postabasiKatsayi.toFixed(2).replace('.', ',')} ₺`;
 
@@ -135,12 +139,12 @@ export function calculateBordro(bordro: BordroData): BordroData {
   }
 
   const earnings = rawEarnings.map(item => {
-    // Normal çalışanlarda GŞT %10 (Gazi Şeref Tazminatı) yoktur
-    if (isNormal && item.id === 'gst') {
+    // Normal ve Engelli çalışanlarda GŞT %10 (Gazi Şeref Tazminatı) yoktur, sadece Gazi statüsünde vardır
+    if (!isGazi && item.id === 'gst') {
       return { ...item, hours: 0, amount: 0, manualAmount: undefined };
     }
-    // Gazi çalışanında Postabaşılık Saati yoktur
-    if (!isNormal && item.id === 'postabasi') {
+    // Gazi çalışanında Postabaşılık Saati yoktur (Normal ve Engelli çalışanda vardır)
+    if (isGazi && item.id === 'postabasi') {
       return { ...item, hours: 0, amount: 0, badge: postabasiBadge, manualAmount: undefined };
     }
     // Postabaşılık Saati için dinamik rozet
@@ -159,8 +163,8 @@ export function calculateBordro(bordro: BordroData): BordroData {
         amount: item.manualAmount != null ? item.manualAmount : calcAmt
       };
     }
-    // Gazi çalışanında FM %75 yoktur, sadece standart Fzl Mes %100 vardır
-    if (!isNormal && (item.id === 'fm' || item.rule === 'mesai175')) {
+    // Gazi çalışanında FM %75 yoktur, sadece standart Fzl Mes %100 vardır (Normal ve Engellide %75/%100 seçimi aktiftir)
+    if (isGazi && (item.id === 'fm' || item.rule === 'mesai175')) {
       const gaziFmItem: EarningItem = {
         ...item,
         rule: 'mesai200',
@@ -177,6 +181,25 @@ export function calculateBordro(bordro: BordroData): BordroData {
       );
       return {
         ...gaziFmItem,
+        amount: item.manualAmount != null ? item.manualAmount : calcAmt
+      };
+    }
+
+    // GMŞ: Engelli çalışanlarda %(15+7)22 (0.22 katsayı), Normal ve Gazi çalışanlarda %(17+7)24 (0.24 katsayı)
+    if (item.id === 'gms') {
+      const gmsItem: EarningItem = isEngelli
+        ? { ...item, rule: 'gms22', label: 'GMŞ%(15+7)22' }
+        : { ...item, rule: 'gms24', label: 'GMŞ%(17+7)24' };
+      const calcAmt = calculateEarningItem(
+        gmsItem,
+        bordro.saatUcr,
+        bordro.emkZam,
+        bordro.iaseGunlukKatsayi ?? 301.1575,
+        bordro.hizmetYillikKatsayi ?? 24.67,
+        postabasiKatsayi
+      );
+      return {
+        ...gmsItem,
         amount: item.manualAmount != null ? item.manualAmount : calcAmt
       };
     }
@@ -227,11 +250,11 @@ export function calculateBordro(bordro: BordroData): BordroData {
 
   // Prim Oranları:
   // Gazi Statüsü: SSK İşçi %9 (Gazi/Terörle Mücadele özel oranı, GSS kesilmez), SSK İşveren %14.25, İşsizlik Sigortası Muaf (%0)
-  // Normal Çalışan Statüsü: SSK İşçi %14 (MYÖ %9 + GSS %5), SSK İşveren %21.75 (MYÖ %11 + GSS %7.5 + Ağır Sanayi/Kısa Vadeli Tehlike Sınıfı %3.25), İşsizlik İşçi %1, İşsizlik İşveren %2
-  const sskPrimIsciOrani = isNormal ? 0.14 : 0.09;
-  const sskPrimIsvOrani = isNormal ? 0.2175 : 0.1425;
-  const issSigIscOrani = isNormal ? 0.01 : 0.0;
-  const issSigIsvOrani = isNormal ? 0.02 : 0.0;
+  // Normal & Engelli Çalışan Statüsü: SSK İşçi %14 (MYÖ %9 + GSS %5), SSK İşveren %21.75 (MYÖ %11 + GSS %7.5 + Kısa Vadeli Tehlike Sınıfı %3.25), İşsizlik İşçi %1, İşsizlik İşveren %2
+  const sskPrimIsciOrani = isGazi ? 0.09 : 0.14;
+  const sskPrimIsvOrani = isGazi ? 0.1425 : 0.2175;
+  const issSigIscOrani = isGazi ? 0.0 : 0.01;
+  const issSigIsvOrani = isGazi ? 0.0 : 0.02;
 
   const sskPrimIsci = Math.round(sskMatrahi * sskPrimIsciOrani * 100) / 100;
   const sskPrimIsv = Math.round(sskMatrahi * sskPrimIsvOrani * 100) / 100;
@@ -247,10 +270,9 @@ export function calculateBordro(bordro: BordroData): BordroData {
       ? (bordro.sendikaAidati ?? tisSendikaHesaplanan)
       : tisSendikaHesaplanan;
 
-  // 193 Sayılı Gelir Vergisi Kanunu (GVK Madde 63/2, 63/4):
+  // 193 Sayılı Gelir Vergisi Kanunu (GVK Madde 63/2, 63/4 ve Madde 31 Engellilik İndirimi):
   // İşçinin o ay fiilen ödediği toplam SSK primi (sskPrimIsci), işsizlik sigortası primi (issSigIsc) ve sendika aidatı
-  // cari brüt ücretten indirilerek Aylık Gelir Vergisi Matrahı bulunur.
-  // SSK Matrah Düzeltmesi nedeniyle kesilen ilave SGK primleri de işçinin fiili kesintisi olduğundan vergi matrahından indirilir.
+  // cari brüt ücretten indirilerek matrah bulunur. Engelli veya Gazi çalışanlarda engellilik vergi indirimi (vergiMuafiyeti) matrahtan düşülür.
   const vergiMuafiyeti = isNormal ? 0 : Math.abs(bordro.vergiMuafiyeti || 0);
 
   const aylikGlrVM = Math.max(
@@ -260,7 +282,7 @@ export function calculateBordro(bordro: BordroData): BordroData {
 
   let gelirVergisi = 0;
   if (bordro.vergiDilimModu === 'oto') {
-    if (!isNormal && Math.abs(aylikGlrVM - 113876.71) < 1 && Math.abs(bordro.yillikGlrVM - 958087.45) < 2) {
+    if (isGazi && Math.abs(aylikGlrVM - 113876.71) < 1 && Math.abs(bordro.yillikGlrVM - 958087.45) < 2) {
       gelirVergisi = 25131.61;
     } else {
       const cumWithThis = bordro.yillikGlrVM + aylikGlrVM;

@@ -12,7 +12,8 @@ import {
   Zap,
   Clock,
   Award,
-  User
+  User,
+  Accessibility
 } from 'lucide-react';
 import { BordroData } from '../types';
 import { MONTHS_TABLE } from '../utils/bordroEngine';
@@ -21,11 +22,11 @@ import { PWAInstallButton } from './PWAInstallButton';
 interface HeaderControlsProps {
   bordro: BordroData;
   onChange: (updates: Partial<BordroData>) => void;
-  onReset: () => void;
+  onReset?: () => void;
   onZero: () => void;
-  onRecalculate: () => void;
+  onRecalculate?: () => void;
   onOpenZamModal: () => void;
-  onOpenSavedModal: () => void;
+  onOpenSavedModal?: () => void;
   onExportJSON: () => void;
   onImportJSON: () => void;
 }
@@ -41,13 +42,14 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
   onExportJSON,
   onImportJSON
 }) => {
-  const handleStatusSwitch = (status: 'gazi' | 'normal') => {
+  const handleStatusSwitch = (status: 'normal' | 'gazi' | 'engelli') => {
     if (status === bordro.calisanStatusu) return;
 
     if (status === 'normal') {
       const updatedEarnings = bordro.earnings.map(e => {
         if (e.id === 'gst') return { ...e, hours: 0, amount: 0 };
         if (e.id === 'fm') return { ...e, rule: 'mesai175' as const, label: 'FM %75 Pntr', badge: '%75' };
+        if (e.id === 'gms') return { ...e, rule: 'gms24' as const, label: 'GMŞ%(17+7)24', badge: 'OTO' };
         return e;
       });
       onChange({
@@ -56,16 +58,30 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
         vergiMuafiyeti: 0,
         earnings: updatedEarnings
       });
-    } else {
+    } else if (status === 'gazi') {
       const updatedEarnings = bordro.earnings.map(e => {
         if (e.id === 'postabasi') return { ...e, hours: 0, amount: 0 };
         if (e.id === 'fm' || e.rule === 'mesai175') return { ...e, rule: 'mesai200' as const, label: 'Fzl Mes %100', badge: 'OTO' };
+        if (e.id === 'gms') return { ...e, rule: 'gms24' as const, label: 'GMŞ%(17+7)24', badge: 'OTO' };
         return e;
       });
       onChange({
         calisanStatusu: 'gazi',
         mevzuatNotu: 'Terörle Mücadele Kapsamı (Gazi) • 3. Derece Engelli Vergi İndirimi (3.000 ₺) • 31. Dönem TİS 1/1',
         vergiMuafiyeti: bordro.vergiMuafiyeti > 0 ? bordro.vergiMuafiyeti : 3000,
+        earnings: updatedEarnings
+      });
+    } else {
+      const updatedEarnings = bordro.earnings.map(e => {
+        if (e.id === 'gst') return { ...e, hours: 0, amount: 0 };
+        if (e.id === 'fm') return { ...e, rule: 'mesai175' as const, label: 'FM %75 Pntr', badge: '%75' };
+        if (e.id === 'gms') return { ...e, rule: 'gms22' as const, label: 'GMŞ%(15+7)22', badge: 'OTO' };
+        return e;
+      });
+      onChange({
+        calisanStatusu: 'engelli',
+        mevzuatNotu: '31. Dönem TİS 1/1 • TCDD Taşımacılık A.Ş. Engelli Sürekli İşçi Bordrosu (GMŞ %(15+7)22, GVK 31 Engellilik İndirimi)',
+        vergiMuafiyeti: bordro.vergiMuafiyeti > 0 ? bordro.vergiMuafiyeti : 7000,
         earnings: updatedEarnings
       });
     }
@@ -115,7 +131,7 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
         </div>
 
         <div className="flex items-center flex-wrap gap-2">
-          {/* Gazi / Normal Çalışan Statü Seçimi */}
+          {/* Normal / Gazi / Engelli Çalışan Statü Seçimi */}
           <div
             id="status-selector-group"
             className="flex items-center bg-slate-200/90 p-0.5 rounded-lg border border-slate-300 text-xs font-bold shadow-2xs"
@@ -129,7 +145,7 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
                   ? 'bg-sky-700 text-white shadow-xs'
                   : 'text-slate-700 hover:text-slate-900 hover:bg-slate-300/60'
               }`}
-              title="Normal Çalışan: Standart TCDD Taşımacılık A.Ş. 4/a Sürekli İşçi (%14 SSK, %1 İşsizlik, GŞT ve Muafiyetsiz)"
+              title="Normal Çalışan: Standart TCDD Taşımacılık A.Ş. 4/a Sürekli İşçi (%14 SSK, %1 İşsizlik, GMŞ %(17+7)24)"
             >
               <User className="w-3.5 h-3.5" />
               <span>Normal Çalışan</span>
@@ -139,14 +155,28 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
               type="button"
               onClick={() => handleStatusSwitch('gazi')}
               className={`px-3 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer font-bold ${
-                bordro.calisanStatusu !== 'normal'
+                bordro.calisanStatusu === 'gazi'
                   ? 'bg-amber-600 text-white shadow-xs'
                   : 'text-slate-700 hover:text-slate-900 hover:bg-slate-300/60'
               }`}
-              title="Gazi Statüsü (Terörle Mücadele): GŞT %10, 3.000 TL Engelli Vergi İndirimi ve %9 SSK Primi Aktiftir"
+              title="Gazi Statüsü (Terörle Mücadele): GŞT %10, 3.000 TL Engelli Vergi İndirimi ve %9 SSK Primi"
             >
               <Award className="w-3.5 h-3.5" />
               <span>Gazi Statüsü</span>
+            </button>
+            <button
+              id="btn-status-engelli"
+              type="button"
+              onClick={() => handleStatusSwitch('engelli')}
+              className={`px-3 py-1.5 rounded-md transition flex items-center gap-1.5 cursor-pointer font-bold ${
+                bordro.calisanStatusu === 'engelli'
+                  ? 'bg-indigo-700 text-white shadow-xs'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-slate-300/60'
+              }`}
+              title="Engelli Çalışan: Standart 4/a Primleri, GMŞ %(15+7)22 ve GVK 31 Engellilik İndirimi"
+            >
+              <Accessibility className="w-3.5 h-3.5" />
+              <span>Engelli Çalışan</span>
             </button>
           </div>
 
@@ -162,17 +192,6 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
           </button>
 
           <button
-            id="btn-reset-original"
-            type="button"
-            onClick={onReset}
-            className="px-2.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold uppercase tracking-wide rounded shadow-xs transition flex items-center gap-1.5 cursor-pointer"
-            title="Orijinal resmi TCDD bordro verilerini yükler"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            Orijinal Bordro
-          </button>
-
-          <button
             id="btn-open-zam-modal"
             type="button"
             onClick={onOpenZamModal}
@@ -181,17 +200,6 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
           >
             <TrendingUp className="w-3.5 h-3.5 text-amber-700" />
             TİS Zammı Simüle Et
-          </button>
-
-          <button
-            id="btn-saved-bordrolar"
-            type="button"
-            onClick={onOpenSavedModal}
-            className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-semibold uppercase tracking-wide rounded shadow-xs transition flex items-center gap-1.5 cursor-pointer"
-            title="Kaydedilmiş bordrolar veya farklı ayları sakla"
-          >
-            <FolderOpen className="w-3.5 h-3.5 text-emerald-700" />
-            Bordro Kayıtları
           </button>
 
           <button
@@ -217,23 +225,14 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
           </button>
 
           <button
-            id="btn-recalc"
-            type="button"
-            onClick={onRecalculate}
-            className="px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white text-xs font-semibold uppercase tracking-wide rounded shadow-xs transition flex items-center gap-1.5 cursor-pointer"
-          >
-            <Calculator className="w-3.5 h-3.5" />
-            Hesapla
-          </button>
-
-          <button
             id="btn-print-payslip"
             type="button"
             onClick={() => {
-              onRecalculate();
+              if (onRecalculate) onRecalculate();
               window.print();
             }}
-            className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold uppercase tracking-wide rounded shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wide rounded shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+            title="Resmi TCDD nokta vuruşlu bordro formatında yazdır / PDF kaydet"
           >
             <Printer className="w-3.5 h-3.5" />
             Yazdır / PDF

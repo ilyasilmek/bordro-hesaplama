@@ -12,6 +12,7 @@ import { StatutorySection } from './components/StatutorySection';
 import { ZamModal } from './components/ZamModal';
 import { SavedBordrolarModal } from './components/SavedBordrolarModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { OfficialPrintableSlip } from './components/OfficialPrintableSlip';
 
 export function App() {
   const [bordro, setBordro] = useState<BordroData>(() => calculateBordro(DEFAULT_TCDD_BORDRO));
@@ -47,8 +48,7 @@ export function App() {
 
   const handleReset = () => {
     setBordro(prev => {
-      const isNormal = prev.calisanStatusu === 'normal';
-      if (isNormal) {
+      if (prev.calisanStatusu === 'normal') {
         return calculateBordro({
           ...SAMPLE_AUGUST_2026_BORDRO,
           calisanStatusu: 'normal',
@@ -57,6 +57,20 @@ export function App() {
           earnings: SAMPLE_AUGUST_2026_BORDRO.earnings.map(e => {
             if (e.id === 'gst') return { ...e, hours: 0, amount: 0 };
             if (e.id === 'fm') return { ...e, rule: 'mesai175', label: 'FM %75 Pntr', badge: '%75' };
+            if (e.id === 'gms') return { ...e, rule: 'gms24', label: 'GMŞ%(17+7)24', badge: 'OTO' };
+            return e;
+          })
+        });
+      } else if (prev.calisanStatusu === 'engelli') {
+        return calculateBordro({
+          ...SAMPLE_AUGUST_2026_BORDRO,
+          calisanStatusu: 'engelli',
+          mevzuatNotu: '31. Dönem TİS 1/1 • TCDD Taşımacılık A.Ş. Engelli Sürekli İşçi Bordrosu (GMŞ %(15+7)22, GVK 31 Engellilik İndirimi)',
+          vergiMuafiyeti: 7000,
+          earnings: SAMPLE_AUGUST_2026_BORDRO.earnings.map(e => {
+            if (e.id === 'gst') return { ...e, hours: 0, amount: 0 };
+            if (e.id === 'fm') return { ...e, rule: 'mesai175', label: 'FM %75 Pntr', badge: '%75' };
+            if (e.id === 'gms') return { ...e, rule: 'gms22', label: 'GMŞ%(15+7)22', badge: 'OTO' };
             return e;
           })
         });
@@ -68,6 +82,7 @@ export function App() {
   const handleZero = () => {
     setBordro(prev => {
       const isNormal = prev.calisanStatusu === 'normal';
+      const isEngelli = prev.calisanStatusu === 'engelli';
       const zeroedEarnings = prev.earnings.map(item => {
         // Hizmet Zammı girilen saate göre değişmeyen, hizmet yılına bağlı maktu hakediştir
         if (item.id === 'hzm') {
@@ -82,7 +97,7 @@ export function App() {
         sporAidati: prev.sporAidati || 10,
         calistigiGun: prev.calistigiGun || 31,
         sskGunu: prev.sskGunu || 30,
-        vergiMuafiyeti: isNormal ? 0 : (prev.vergiMuafiyeti || 3000),
+        vergiMuafiyeti: isNormal ? 0 : (prev.vergiMuafiyeti || (isEngelli ? 7000 : 3000)),
         terfiFarki: 0,
         mahsupKesintisi: 0,
         sskMatrahD: 0,
@@ -177,67 +192,73 @@ export function App() {
         className="hidden"
       />
 
-      {/* Action Bar & Document Top Controls */}
-      <HeaderControls
-        bordro={bordro}
-        onChange={handleChange}
-        onReset={handleReset}
-        onZero={handleZero}
-        onRecalculate={handleRecalculate}
-        onOpenZamModal={() => setIsZamModalOpen(true)}
-        onOpenSavedModal={() => setIsSavedModalOpen(true)}
-        onExportJSON={handleExportJSON}
-        onImportJSON={handleImportClick}
-      />
+      {/* Ekrandaki Canlı Bordro Düzenleyici (Yazdırma sırasında gizlenir) */}
+      <div id="interactive-editor-view" className="w-full flex flex-col items-center">
+        {/* Action Bar & Document Top Controls */}
+        <HeaderControls
+          bordro={bordro}
+          onChange={handleChange}
+          onReset={handleReset}
+          onZero={handleZero}
+          onRecalculate={handleRecalculate}
+          onOpenZamModal={() => setIsZamModalOpen(true)}
+          onOpenSavedModal={() => setIsSavedModalOpen(true)}
+          onExportJSON={handleExportJSON}
+          onImportJSON={handleImportClick}
+        />
 
-      {/* Main Single-View Payslip Card */}
-      <main
-        id="official-payroll-slip"
-        className="payslip-container w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] bg-white border border-slate-300 rounded-lg p-3 sm:p-4 2xl:p-6 shadow-xs"
-      >
-        {/* The 12-column grid corresponding exactly to ilyas-bordro.netlify.app */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 2xl:gap-4 items-stretch">
-          {/* Left Column: Özlük Bilgileri (col-span-3) */}
-          <EmployeeSection
-            bordro={bordro}
-            onChange={handleChange}
-            onBaseRateChange={handleBaseRateChange}
-          />
+        {/* Main Single-View Payslip Card */}
+        <main
+          id="official-payroll-slip"
+          className="payslip-container w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] bg-white border border-slate-300 rounded-lg p-3 sm:p-4 2xl:p-6 shadow-xs"
+        >
+          {/* The 12-column grid corresponding exactly to ilyas-bordro.netlify.app */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 2xl:gap-4 items-stretch">
+            {/* Left Column: Özlük Bilgileri (col-span-3) */}
+            <EmployeeSection
+              bordro={bordro}
+              onChange={handleChange}
+              onBaseRateChange={handleBaseRateChange}
+            />
 
-          {/* Middle Column: Hakediş Kalemleri & Özel Kesintiler (col-span-6) */}
-          <EarningsAndDeductionsSection
-            bordro={bordro}
-            onChange={handleChange}
-            onHourChange={handleHourChange}
-            onAmountChange={handleAmountChange}
-          />
+            {/* Middle Column: Hakediş Kalemleri & Özel Kesintiler (col-span-6) */}
+            <EarningsAndDeductionsSection
+              bordro={bordro}
+              onChange={handleChange}
+              onHourChange={handleHourChange}
+              onAmountChange={handleAmountChange}
+            />
 
-          {/* Right Column: Yasal Kesintiler & Sonuçlar (col-span-3) */}
-          <StatutorySection
-            bordro={bordro}
-            onChange={handleChange}
-          />
-        </div>
-
-        {/* Footer Note & Signature Row inside Payslip */}
-        <footer className="mt-3 pt-2.5 border-t border-dashed border-slate-300 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[10.5px] text-slate-500">
-          <div className="space-y-0.5">
-            <p>
-              * Bu bordro TCDD Taşımacılık A.Ş. 31. Dönem Toplu İş Sözleşmesi (TİS), 5510 sayılı Kanun ve
-              GİB 2026 Gelir Vergisi mevzuatına tam uyumludur.
-            </p>
-            <p>
-              * Terörle Mücadele Kapsamı (Gazi) personeli için SSK Primi %9 (GSS kesintisiz) ve İşsizlik
-              Sigortası %0 olarak tatbik edilmiştir.
-            </p>
+            {/* Right Column: Yasal Kesintiler & Sonuçlar (col-span-3) */}
+            <StatutorySection
+              bordro={bordro}
+              onChange={handleChange}
+            />
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-            <span className="text-slate-600 font-semibold uppercase">İşçi İmzası:</span>
-            <div className="w-28 sm:w-36 h-7 border-b border-slate-400" />
-          </div>
-        </footer>
-      </main>
+          {/* Footer Note & Signature Row inside Payslip */}
+          <footer className="mt-3 pt-2.5 border-t border-dashed border-slate-300 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-[10.5px] text-slate-500">
+            <div className="space-y-0.5">
+              <p>
+                * Bu bordro TCDD Taşımacılık A.Ş. 31. Dönem Toplu İş Sözleşmesi (TİS), 5510 sayılı Kanun ve
+                GİB 2026 Gelir Vergisi mevzuatına tam uyumludur.
+              </p>
+              <p>
+                * Terörle Mücadele Kapsamı (Gazi) personeli için SSK Primi %9 (GSS kesintisiz) ve İşsizlik
+                Sigortası %0 olarak tatbik edilmiştir.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+              <span className="text-slate-600 font-semibold uppercase">İşçi İmzası:</span>
+              <div className="w-28 sm:w-36 h-7 border-b border-slate-400" />
+            </div>
+          </footer>
+        </main>
+      </div>
+
+      {/* Otantik TCDD Nokta Vuruşlu Tek Sayfa Yazdırma Bordrosu (Sadece print esnasında görünür) */}
+      <OfficialPrintableSlip bordro={bordro} />
 
       {/* TİS Zammı Simülatörü Modal */}
       <ZamModal

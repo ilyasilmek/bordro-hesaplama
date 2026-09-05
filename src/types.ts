@@ -219,7 +219,7 @@ export interface EarningItem {
   label: string;
   hours: number;
   amount: number;
-  rule: 'base' | 'gst10' | 'vardiya10' | 'gece15' | 'mesai200' | 'mesai175' | 'postabasi' | 'gms24' | 'iase' | 'hizmet' | 'custom';
+  rule: 'base' | 'gst10' | 'vardiya10' | 'gece15' | 'mesai200' | 'mesai175' | 'postabasi' | 'gms24' | 'gms22' | 'iase' | 'hizmet' | 'custom';
   unitLabel?: string;
   badge?: string;
   customRate?: number;
@@ -236,7 +236,7 @@ export interface BordroData {
   bordroBaslik: string;
   bordroDonem: string;
   aySecim: number;
-  calisanStatusu?: 'gazi' | 'normal';
+  calisanStatusu?: 'normal' | 'gazi' | 'engelli';
   mevzuatNotu: string;
   islYS: string;
   adi: string;

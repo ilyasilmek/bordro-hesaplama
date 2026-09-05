@@ -64,11 +64,11 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
   };
 
   const visibleEarnings = bordro.earnings.filter(earning => {
-    const isNormal = bordro.calisanStatusu === 'normal';
-    // Normal çalışanlarda GŞT %10 (Gazi Şeref Tazminatı) gösterilmez
-    if (isNormal && earning.id === 'gst') return false;
-    // Gazi bordrosunda Postabaşılık Saati gösterilmez
-    if (!isNormal && (earning.id === 'postabasi' || earning.rule === 'postabasi')) return false;
+    const isGazi = bordro.calisanStatusu === 'gazi';
+    // GŞT %10 (Gazi Şeref Tazminatı) sadece Gazi statüsünde gösterilir (Normal ve Engellide gösterilmez)
+    if (!isGazi && earning.id === 'gst') return false;
+    // Gazi bordrosunda Postabaşılık Saati gösterilmez (Normal ve Engelli çalışanlarda gösterilir)
+    if (isGazi && (earning.id === 'postabasi' || earning.rule === 'postabasi')) return false;
     return true;
   });
 
@@ -122,7 +122,9 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
             </div>
 
             {visibleEarnings.map((earning, index) => {
+              const isGazi = bordro.calisanStatusu === 'gazi';
               const isNormal = bordro.calisanStatusu === 'normal';
+              const isEngelli = bordro.calisanStatusu === 'engelli';
               const isFmItem = earning.id === 'fm' || earning.rule === 'mesai175' || earning.rule === 'mesai200';
               const isPostabasi = earning.id === 'postabasi' || earning.rule === 'postabasi';
 
@@ -132,10 +134,10 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                     {isFmItem ? (
                       <div className="flex items-center gap-1 min-w-0">
                         <span className="text-[11px] 2xl:text-xs text-slate-800 font-bold truncate">
-                          {isNormal && earning.rule === 'mesai175' ? 'FM %75 Pntr' : 'Fzl Mes %100'}
+                          {!isGazi && earning.rule === 'mesai175' ? 'FM %75 Pntr' : 'Fzl Mes %100'}
                         </span>
-                        {/* %75 / %100 Seçim Butonları sadece Normal İşçi için gösterilir */}
-                        {isNormal && (
+                        {/* %75 / %100 Seçim Butonları Normal ve Engelli Çalışanlar için aktiftir */}
+                        {!isGazi && (
                           <div
                             id={`fm-selector-${earning.id}`}
                             className="no-print inline-flex items-center bg-slate-200/90 p-0.5 rounded border border-slate-300 text-[9px] font-bold shrink-0 ml-1"
@@ -192,17 +194,17 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                     {isFmItem ? (
                       <span
                         className={`no-print text-[8px] px-1.5 py-0.2 rounded font-semibold border ${
-                          isNormal && earning.rule === 'mesai175'
+                          !isGazi && earning.rule === 'mesai175'
                             ? 'bg-amber-100 text-amber-900 border-amber-300'
                             : 'bg-purple-100 text-purple-900 border-purple-300'
                         }`}
                         title={
-                          isNormal && earning.rule === 'mesai175'
+                          !isGazi && earning.rule === 'mesai175'
                             ? 'Hesaplama: Saat x (Saat Ücreti + Emek Zammı) x 1.75'
                             : 'Hesaplama: Saat x (Saat Ücreti + Emek Zammı) x 2.00'
                         }
                       >
-                        {isNormal && earning.rule === 'mesai175' ? '1.75x' : '2.00x'}
+                        {!isGazi && earning.rule === 'mesai175' ? '1.75x' : '2.00x'}
                       </span>
                     ) : isPostabasi ? (
                       <span
@@ -210,6 +212,21 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
                         title={`TİS Postabaşılık Saati: Saat x ${formatCurrency(bordro.postabasiSaatUcreti ?? 4.84)} TL`}
                       >
                         {formatCurrency(bordro.postabasiSaatUcreti ?? 4.84)} ₺
+                      </span>
+                    ) : earning.id === 'gms' ? (
+                      <span
+                        className={`no-print text-[8px] px-1.5 py-0.2 rounded font-semibold border ${
+                          isEngelli
+                            ? 'bg-indigo-100 text-indigo-900 border-indigo-300'
+                            : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                        }`}
+                        title={
+                          isEngelli
+                            ? 'Engelli GMŞ: Saat x (Saat Ücr + Emek Zam) x %22'
+                            : 'GMŞ: Saat x (Saat Ücr + Emek Zam) x %24'
+                        }
+                      >
+                        {isEngelli ? '%22 OTO' : '%24 OTO'}
                       </span>
                     ) : (
                       <span
@@ -385,38 +402,87 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
               </div>
             </div>
 
-            {/* Vergiden Mua (3.000 TL Gazi / Engellilik İndirimi) - Sadece Gazi Statüsünde gösterilir */}
+            {/* Vergiden Mua (GVK Madde 31 Engellilik İndirimi / Gazi Muafiyeti) */}
             {bordro.calisanStatusu !== 'normal' && (
-              <div className="flex items-center justify-between gap-1.5">
-                <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
-                  <label
-                    className="text-[11px] 2xl:text-xs text-slate-800 font-medium whitespace-nowrap"
-                    htmlFor="kesVergidenMua"
-                    title="GVK Madde 31 - Engelli / Gazi Vergi İndirimi"
-                  >
-                    Vergiden Mua
-                  </label>
-                  <span
-                    className="no-print text-[8px] bg-sky-100 text-sky-800 font-bold px-1.5 py-0.2 rounded border border-sky-300 shrink-0 leading-tight"
-                    title="Vergi matrahından düşen istisna tutarı"
-                  >
-                    İNDİRİM
-                  </span>
+              <div className="flex flex-col gap-1 bg-amber-50/60 p-1.5 rounded border border-amber-200/90">
+                <div className="flex items-center justify-between gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0 pr-1">
+                    <label
+                      className="text-[11px] 2xl:text-xs text-slate-800 font-bold whitespace-nowrap"
+                      htmlFor="kesVergidenMua"
+                      title="GVK Madde 31 - Engelli / Gazi Vergi İndirimi"
+                    >
+                      Vergiden Mua
+                    </label>
+                    <span
+                      className="no-print text-[8px] bg-amber-200 text-amber-900 font-extrabold px-1.5 py-0.2 rounded border border-amber-400 shrink-0 leading-tight"
+                      title="Gelir vergisi matrahından indirilen muafiyet tutarı"
+                    >
+                      {bordro.calisanStatusu === 'engelli' ? 'GVK 31 ENGELLİ' : 'GAZİ İNDİRİMİ'}
+                    </span>
+                  </div>
+                  <div className="flex items-center w-28 sm:w-32 2xl:w-36 shrink-0">
+                    <span className="mr-1 text-slate-500 font-bold">:</span>
+                    <input
+                      key={`vergiMuafiyeti-${bordro.vergiMuafiyeti}`}
+                      id="kesVergidenMua"
+                      name="kesVergidenMua"
+                      type="text"
+                      placeholder="0,00"
+                      defaultValue={bordro.vergiMuafiyeti > 0 ? formatCurrency(bordro.vergiMuafiyeti) : ''}
+                      onFocus={e => e.target.select()}
+                      onBlur={e => onChange({ vergiMuafiyeti: parseCurrency(e.target.value) })}
+                      className="w-full text-xs font-bold text-right bg-white/95 border border-amber-300 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center w-28 sm:w-32 2xl:w-36 shrink-0">
-                  <span className="mr-1 text-slate-500 font-bold">:</span>
-                  <input
-                    key={`vergiMuafiyeti-${bordro.vergiMuafiyeti}`}
-                    id="kesVergidenMua"
-                    name="kesVergidenMua"
-                    type="text"
-                    placeholder="0,00"
-                    defaultValue={bordro.vergiMuafiyeti > 0 ? formatCurrency(bordro.vergiMuafiyeti) : ''}
-                    onFocus={e => e.target.select()}
-                    onBlur={e => onChange({ vergiMuafiyeti: parseCurrency(e.target.value) })}
-                    className="w-full text-xs font-bold text-right bg-white/95 border border-amber-200/90 rounded px-1.5 py-0.5 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500"
-                  />
-                </div>
+
+                {/* Engelli Çalışan İçin Derece Seçim Hızlı Butonları */}
+                {bordro.calisanStatusu === 'engelli' && (
+                  <div className="no-print flex items-center justify-between gap-1 pt-1 border-t border-amber-200/70 text-[9px]">
+                    <span className="text-slate-600 font-semibold text-[8.5px]" title="332 Seri No'lu GVK Genel Tebliği (2026)">
+                      GVK 31 Derece (2026):
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => onChange({ vergiMuafiyeti: 12000 })}
+                        className={`px-1.5 py-0.5 rounded cursor-pointer transition font-bold border text-[9px] ${
+                          Math.abs(bordro.vergiMuafiyeti - 12000) < 1
+                            ? 'bg-indigo-700 text-white border-indigo-800 shadow-2xs'
+                            : 'bg-white text-slate-700 hover:bg-amber-100/70 border-slate-300'
+                        }`}
+                        title="1. Derece Engelli İndirimi (%80 ve üzeri): 12.000 ₺ (2026 Yılı)"
+                      >
+                        1. Der (12.000 ₺)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onChange({ vergiMuafiyeti: 7000 })}
+                        className={`px-1.5 py-0.5 rounded cursor-pointer transition font-bold border text-[9px] ${
+                          Math.abs(bordro.vergiMuafiyeti - 7000) < 1
+                            ? 'bg-indigo-700 text-white border-indigo-800 shadow-2xs'
+                            : 'bg-white text-slate-700 hover:bg-amber-100/70 border-slate-300'
+                        }`}
+                        title="2. Derece Engelli İndirimi (%60-%79 arası): 7.000 ₺ (2026 Yılı)"
+                      >
+                        2. Der (7.000 ₺)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onChange({ vergiMuafiyeti: 3000 })}
+                        className={`px-1.5 py-0.5 rounded cursor-pointer transition font-bold border text-[9px] ${
+                          Math.abs(bordro.vergiMuafiyeti - 3000) < 1
+                            ? 'bg-indigo-700 text-white border-indigo-800 shadow-2xs'
+                            : 'bg-white text-slate-700 hover:bg-amber-100/70 border-slate-300'
+                        }`}
+                        title="3. Derece Engelli İndirimi (%40-%59 arası): 3.000 ₺ (2026 Yılı)"
+                      >
+                        3. Der (3.000 ₺)
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
