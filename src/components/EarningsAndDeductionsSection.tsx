@@ -8,13 +8,17 @@ interface EarningsAndDeductionsSectionProps {
   onChange: (updates: Partial<BordroData>) => void;
   onHourChange: (id: string, hours: number) => void;
   onAmountChange?: (id: string, amount: number) => void;
+  showOnly?: 'all' | 'earnings' | 'deductions';
+  className?: string;
 }
 
 export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSectionProps> = ({
   bordro,
   onChange,
   onHourChange,
-  onAmountChange
+  onAmountChange,
+  showOnly = 'all',
+  className
 }) => {
   const [newDedName, setNewDedName] = useState('');
   const [newDedAmount, setNewDedAmount] = useState('');
@@ -108,9 +112,13 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
   };
 
   return (
-    <section id="earnings-and-deductions-section" className="md:col-span-6 font-dotmatrix">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 2xl:gap-4 h-full">
+    <section
+      id="earnings-and-deductions-section"
+      className={className || (showOnly === 'all' ? 'md:col-span-6 font-dotmatrix' : 'w-full font-dotmatrix')}
+    >
+      <div className={`grid ${showOnly === 'all' ? 'grid-cols-1 lg:grid-cols-2 gap-3 2xl:gap-4' : 'grid-cols-1'} h-full`}>
         {/* Left Card: Hakediş Kalemleri */}
+        {(showOnly === 'all' || showOnly === 'earnings') && (
         <div className="bg-emerald-50/40 border border-emerald-200/90 rounded-lg p-3 2xl:p-3.5 space-y-1.5 2xl:space-y-2 shadow-xs flex flex-col justify-between">
           <div className="space-y-1 2xl:space-y-1.5">
             <div className="text-xs font-bold text-emerald-950 uppercase mb-2 pb-1 border-b border-emerald-200/90 flex justify-between items-center">
@@ -287,8 +295,10 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
             })}
           </div>
         </div>
+        )}
 
         {/* Right Card: Özel Kesintiler */}
+        {(showOnly === 'all' || showOnly === 'deductions') && (
         <div className="bg-amber-50/45 border border-amber-200/90 rounded-lg p-3 2xl:p-3.5 space-y-1.5 2xl:space-y-2 shadow-xs flex flex-col justify-between">
           <div className="space-y-1.5 2xl:space-y-2">
             <div className="text-xs font-bold text-amber-950 uppercase mb-2 pb-1 border-b border-amber-200/90 flex justify-between items-center">
@@ -688,6 +698,7 @@ export const EarningsAndDeductionsSection: React.FC<EarningsAndDeductionsSection
             </div>
           </div>
         </div>
+        )}
       </div>
     </section>
   );

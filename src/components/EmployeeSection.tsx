@@ -6,12 +6,14 @@ interface EmployeeSectionProps {
   bordro: BordroData;
   onChange: (updates: Partial<BordroData>) => void;
   onBaseRateChange: (saatUcr: number, emkZam: number) => void;
+  className?: string;
 }
 
 export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
   bordro,
   onChange,
-  onBaseRateChange
+  onBaseRateChange,
+  className
 }) => {
   const handleSaatUcrBlur = (val: string) => {
     const num = parseCurrency(val);
@@ -26,7 +28,7 @@ export const EmployeeSection: React.FC<EmployeeSectionProps> = ({
   return (
     <section
       id="employee-section"
-      className="md:col-span-3 flex flex-col justify-between p-3 2xl:p-3.5 rounded-lg bg-sky-50/45 border border-sky-200/90 space-y-1.5 2xl:space-y-2 text-slate-900 font-dotmatrix shadow-xs"
+      className={className || "md:col-span-3 flex flex-col justify-between p-3 2xl:p-3.5 rounded-lg bg-sky-50/45 border border-sky-200/90 space-y-1.5 2xl:space-y-2 text-slate-900 font-dotmatrix shadow-xs"}
     >
       <div className="space-y-1.5 2xl:space-y-2">
         {/* Adı */}

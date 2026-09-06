@@ -10,11 +10,13 @@ import {
 interface StatutorySectionProps {
   bordro: BordroData;
   onChange: (updates: Partial<BordroData>) => void;
+  className?: string;
 }
 
 export const StatutorySection: React.FC<StatutorySectionProps> = ({
   bordro,
-  onChange
+  onChange,
+  className
 }) => {
   const taxAdjustment = autoAdjustTaxBracketForBordro(bordro);
   const effectiveRate =
@@ -25,7 +27,7 @@ export const StatutorySection: React.FC<StatutorySectionProps> = ({
   return (
     <section
       id="statutory-and-summary-section"
-      className="md:col-span-3 p-3 2xl:p-3.5 rounded-lg bg-indigo-50/45 border border-indigo-200/90 space-y-1.5 2xl:space-y-2 font-dotmatrix shadow-xs flex flex-col justify-between"
+      className={className || "md:col-span-3 p-3 2xl:p-3.5 rounded-lg bg-indigo-50/45 border border-indigo-200/90 space-y-1.5 2xl:space-y-2 font-dotmatrix shadow-xs flex flex-col justify-between"}
     >
       <div className="space-y-1.5 2xl:space-y-2">
         {/* Çalıştığı Gün */}

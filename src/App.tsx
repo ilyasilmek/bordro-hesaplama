@@ -4,14 +4,21 @@ import {
   FolderOpen,
   TrendingUp,
   Sparkles,
-  FileSpreadsheet,
-  Award
+  User,
+  Coins,
+  Scissors,
+  ShieldCheck,
+  LayoutGrid,
+  ChevronRight,
+  ChevronLeft,
+  Printer
 } from 'lucide-react';
 import { BordroData } from './types';
 import {
   DEFAULT_TCDD_BORDRO,
   SAMPLE_AUGUST_2026_BORDRO,
-  calculateBordro
+  calculateBordro,
+  formatCurrency
 } from './utils/bordroEngine';
 import { HeaderControls } from './components/HeaderControls';
 import { EmployeeSection } from './components/EmployeeSection';
@@ -25,9 +32,12 @@ import { OfficialPrintableSlip } from './components/OfficialPrintableSlip';
 import { IntroSplashAnimation } from './components/IntroSplashAnimation';
 import { AnimatePresence } from 'motion/react';
 
+type TabType = 'ozluk' | 'hakedisler' | 'kesintiler' | 'sgk-vergi' | 'tumu';
+
 export function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [bordro, setBordro] = useState<BordroData>(() => calculateBordro(DEFAULT_TCDD_BORDRO));
+  const [activeTab, setActiveTab] = useState<TabType>('ozluk');
   const [isZamModalOpen, setIsZamModalOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -244,71 +254,71 @@ export function App() {
       />
 
       {/* Üst Kurumsal Navigasyon ve Birincil Rapor Başlığı (Her Ekranda Sabit ve Belirgin) */}
-      <div className="w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] mb-3 no-print">
-        <div className="bg-slate-900 text-white rounded-xl px-4 py-3 shadow-md border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-600 text-white font-bold text-xl shadow-inner shrink-0">
+      <div className="w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] mb-2.5 sm:mb-3 no-print">
+        <div className="bg-slate-900 text-white rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-md border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3 w-full md:w-auto">
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-600 text-white font-bold text-lg sm:text-xl shadow-inner shrink-0">
               ₺
             </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-sm sm:text-base tracking-tight text-white">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <span className="font-bold text-xs sm:text-sm md:text-base tracking-tight text-white truncate">
                   TCDD TAŞIMACILIK A.Ş. BORDRO SİSTEMİ
                 </span>
-                <span className="bg-emerald-950 text-emerald-300 border border-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded">
+                <span className="bg-emerald-950 text-emerald-300 border border-emerald-700 text-[9.5px] sm:text-[10px] font-bold px-1.5 py-0.2 rounded shrink-0">
                   2026 Mevzuatı
                 </span>
               </div>
-              <p className="text-slate-400 text-xs mt-0.5">
+              <p className="text-slate-400 text-[11px] sm:text-xs mt-0.5 truncate hidden sm:block">
                 31. Dönem TİS • 4/a Sürekli İşçi Aylık Maaş ve Kesinti Robotu
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            {/* Tek ve Net Rapor Butonu */}
+          {/* Mobilde 4 buton tam genişlikte 4 eşit sütun, masaüstünde flex */}
+          <div className="grid grid-cols-4 sm:flex items-center gap-1.5 w-full md:w-auto">
             <button
               id="top-nav-btn-open-report"
               type="button"
               onClick={() => setIsReportModalOpen(true)}
-              className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs border border-emerald-500/50"
+              className="px-2 sm:px-3.5 py-1.5 sm:py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs border border-emerald-500/50"
               title="Geçmiş Maaşlar, Toplam Gelir-Gider ve Vergi Raporu (Şifreli: 1510)"
             >
-              <BarChart3 className="w-3.5 h-3.5 text-emerald-200" />
-              <span>Rapor</span>
+              <BarChart3 className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
+              <span className="truncate">Rapor</span>
             </button>
 
             <button
               id="top-nav-btn-saved"
               type="button"
               onClick={() => setIsSavedModalOpen(true)}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
               title="Kaydedilmiş bordrolar"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-slate-400" />
-              <span>Kayıtlılar</span>
+              <FolderOpen className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="truncate">Kayıtlılar</span>
             </button>
 
             <button
               id="top-nav-btn-zam"
               type="button"
               onClick={() => setIsZamModalOpen(true)}
-              className="px-3 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
               title="TİS Zammı Simülatörü"
             >
-              <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
-              <span>TİS Zammı</span>
+              <TrendingUp className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span className="truncate">TİS Zammı</span>
             </button>
 
             <button
               id="top-nav-btn-replay-intro"
               type="button"
               onClick={() => setShowIntro(true)}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
               title="Giriş animasyonunu tekrar oynat"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Giriş</span>
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span className="truncate">Giriş</span>
             </button>
           </div>
         </div>
@@ -332,30 +342,281 @@ export function App() {
         {/* Main Single-View Payslip Card */}
         <main
           id="official-payroll-slip"
-          className="payslip-container w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] bg-white border border-slate-300 rounded-lg p-3 sm:p-4 2xl:p-6 shadow-xs"
+          className="payslip-container w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] bg-white border border-slate-300 rounded-lg p-2.5 sm:p-4 2xl:p-6 shadow-xs"
         >
-          {/* The 12-column grid corresponding exactly to ilyas-bordro.netlify.app */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 2xl:gap-4 items-stretch">
-            {/* Left Column: Özlük Bilgileri (col-span-3) */}
-            <EmployeeSection
-              bordro={bordro}
-              onChange={handleChange}
-              onBaseRateChange={handleBaseRateChange}
-            />
+          {/* TAB ÇUBUĞU (Özlük Bilgileri, Hakedişler, Kesintiler, SGK-Vergi, Tüm Bordro) */}
+          <div className="mb-3 border-b border-slate-200 pb-2.5 no-print">
+            {/* Hızlı Net Maaş ve Durum Bilgi Şeridi */}
+            <div className="mb-2.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white px-3 py-2 rounded-lg flex items-center justify-between gap-2 shadow-xs text-xs font-dotmatrix">
+              <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-400 text-[10.5px] sm:text-xs">Toplam Gelir:</span>
+                  <span className="font-bold text-emerald-400 font-mono text-xs sm:text-sm">
+                    {formatCurrency(bordro.toplamGelir)} ₺
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-400 text-[10.5px] sm:text-xs">Toplam Kesinti:</span>
+                  <span className="font-bold text-amber-400 font-mono text-xs sm:text-sm">
+                    {formatCurrency(bordro.toplamKesinti)} ₺
+                  </span>
+                </div>
+              </div>
 
-            {/* Middle Column: Hakediş Kalemleri & Özel Kesintiler (col-span-6) */}
-            <EarningsAndDeductionsSection
-              bordro={bordro}
-              onChange={handleChange}
-              onHourChange={handleHourChange}
-              onAmountChange={handleAmountChange}
-            />
+              <div className="flex items-center gap-1.5 bg-emerald-950 border border-emerald-500/60 px-2.5 py-1 rounded-md shrink-0 shadow-inner">
+                <span className="text-[10px] sm:text-xs text-emerald-300 font-bold uppercase tracking-wider">
+                  NET:
+                </span>
+                <span className="font-extrabold text-xs sm:text-base text-white font-mono">
+                  {formatCurrency(bordro.netUcret)} ₺
+                </span>
+              </div>
+            </div>
 
-            {/* Right Column: Yasal Kesintiler & Sonuçlar (col-span-3) */}
-            <StatutorySection
-              bordro={bordro}
-              onChange={handleChange}
-            />
+            {/* Tab Butonları */}
+            <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto pb-1 scrollbar-none font-dotmatrix">
+              {/* Tab 1: Özlük Bilgileri */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('ozluk')}
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                  activeTab === 'ozluk'
+                    ? 'bg-sky-700 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                }`}
+              >
+                <User className="w-3.5 h-3.5 shrink-0" />
+                <span>Özlük Bilgileri</span>
+              </button>
+
+              {/* Tab 2: Hakedişler */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('hakedisler')}
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                  activeTab === 'hakedisler'
+                    ? 'bg-emerald-700 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                }`}
+              >
+                <Coins className="w-3.5 h-3.5 shrink-0" />
+                <span>Hakedişler</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                    activeTab === 'hakedisler'
+                      ? 'bg-emerald-800 text-emerald-100'
+                      : 'bg-emerald-100 text-emerald-800'
+                  }`}
+                >
+                  {formatCurrency(bordro.toplamGelir)}
+                </span>
+              </button>
+
+              {/* Tab 3: Kesintiler */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('kesintiler')}
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                  activeTab === 'kesintiler'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                }`}
+              >
+                <Scissors className="w-3.5 h-3.5 shrink-0" />
+                <span>Kesintiler</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                    activeTab === 'kesintiler'
+                      ? 'bg-amber-700 text-amber-100'
+                      : 'bg-amber-100 text-amber-800'
+                  }`}
+                >
+                  {formatCurrency(bordro.toplamKesinti)}
+                </span>
+              </button>
+
+              {/* Tab 4: SGK - Vergi */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('sgk-vergi')}
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                  activeTab === 'sgk-vergi'
+                    ? 'bg-indigo-700 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                <span>SGK & Vergi</span>
+              </button>
+
+              {/* Tab 5: Tüm Bordro */}
+              <button
+                type="button"
+                onClick={() => setActiveTab('tumu')}
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                  activeTab === 'tumu'
+                    ? 'bg-slate-800 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                }`}
+                title="Tüm bölümleri yan yana klasik bordro görünümünde göster"
+              >
+                <LayoutGrid className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">Tüm Bordro</span>
+                <span className="sm:hidden">Tümü</span>
+              </button>
+            </div>
+          </div>
+
+          {/* TAB İÇERİKLERİ */}
+          <div className="w-full">
+            {/* SEÇİLEN TEK SEKME: ÖZLÜK BİLGİLERİ */}
+            {activeTab === 'ozluk' && (
+              <div className="space-y-3">
+                <EmployeeSection
+                  bordro={bordro}
+                  onChange={handleChange}
+                  onBaseRateChange={handleBaseRateChange}
+                  className="w-full flex flex-col justify-between p-3 sm:p-4 rounded-lg bg-sky-50/45 border border-sky-200/90 space-y-2 text-slate-900 font-dotmatrix shadow-xs"
+                />
+                {/* Adım Yönlendirme */}
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('hakedisler')}
+                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <span>Sonraki: Hakediş Kalemleri</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* SEÇİLEN TEK SEKME: HAKEDİŞLER */}
+            {activeTab === 'hakedisler' && (
+              <div className="space-y-3">
+                <EarningsAndDeductionsSection
+                  bordro={bordro}
+                  onChange={handleChange}
+                  onHourChange={handleHourChange}
+                  onAmountChange={handleAmountChange}
+                  showOnly="earnings"
+                  className="w-full font-dotmatrix"
+                />
+                {/* Adım Yönlendirme */}
+                <div className="flex items-center justify-between pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('ozluk')}
+                    className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Özlük Bilgileri</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('kesintiler')}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <span>Sonraki: Kesintiler</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* SEÇİLEN TEK SEKME: KESİNTİLER */}
+            {activeTab === 'kesintiler' && (
+              <div className="space-y-3">
+                <EarningsAndDeductionsSection
+                  bordro={bordro}
+                  onChange={handleChange}
+                  onHourChange={handleHourChange}
+                  onAmountChange={handleAmountChange}
+                  showOnly="deductions"
+                  className="w-full font-dotmatrix"
+                />
+                {/* Adım Yönlendirme */}
+                <div className="flex items-center justify-between pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('hakedisler')}
+                    className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Hakedişler</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('sgk-vergi')}
+                    className="px-4 py-2 bg-indigo-700 hover:bg-indigo-600 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <span>Sonraki: SGK ve Vergi</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* SEÇİLEN TEK SEKME: SGK VE VERGİ */}
+            {activeTab === 'sgk-vergi' && (
+              <div className="space-y-3">
+                <StatutorySection
+                  bordro={bordro}
+                  onChange={handleChange}
+                  className="w-full p-3 sm:p-4 rounded-lg bg-indigo-50/45 border border-indigo-200/90 space-y-2 font-dotmatrix shadow-xs flex flex-col justify-between"
+                />
+                {/* Adım Yönlendirme */}
+                <div className="flex items-center justify-between pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('kesintiler')}
+                    className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Kesintiler</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleRecalculate();
+                      window.print();
+                    }}
+                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Yazdır / PDF İndir</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* TÜMÜ (KLASİK 12 SÜTUNLU TAM BORDRO GÖRÜNÜMÜ) */}
+            {activeTab === 'tumu' && (
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 2xl:gap-4 items-stretch">
+                {/* Left Column: Özlük Bilgileri (col-span-3) */}
+                <EmployeeSection
+                  bordro={bordro}
+                  onChange={handleChange}
+                  onBaseRateChange={handleBaseRateChange}
+                />
+
+                {/* Middle Column: Hakediş Kalemleri & Özel Kesintiler (col-span-6) */}
+                <EarningsAndDeductionsSection
+                  bordro={bordro}
+                  onChange={handleChange}
+                  onHourChange={handleHourChange}
+                  onAmountChange={handleAmountChange}
+                  showOnly="all"
+                />
+
+                {/* Right Column: Yasal Kesintiler & Sonuçlar (col-span-3) */}
+                <StatutorySection
+                  bordro={bordro}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
           </div>
 
           {/* Footer Note & Signature Row inside Payslip */}
