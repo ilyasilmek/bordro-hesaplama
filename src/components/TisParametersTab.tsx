@@ -78,6 +78,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                   <input
                     type="number"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     step="0.05"
                     min="1.0"
                     max="3.0"
@@ -100,6 +101,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                   <input
                     type="number"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     step="0.1"
                     min="1.0"
                     max="4.0"
@@ -122,6 +124,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                   <input
                     type="number"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     step="0.5"
                     min="1.0"
                     max="5.0"
@@ -144,6 +147,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                   <input
                     type="number"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     step="0.01"
                     min="0"
                     max="0.5"
@@ -174,6 +178,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <input
                   type="number"
                   inputMode="numeric"
+                  pattern="[0-9]*"
                   min="0"
                   max="200"
                   value={tisConfig.annualBonusDaysTotal}
@@ -192,6 +197,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <input
                   type="number"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   step="0.5"
                   min="0"
                   value={tisConfig.seniorityPayPerYear}
@@ -211,6 +217,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                   <input
                     type="number"
                     inputMode="numeric"
+                    pattern="[0-9]*"
                     min="1"
                     max="2"
                     value={tisConfig.unionDuesDays}
@@ -243,6 +250,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <input
                   type="number"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   step="100"
                   value={tisConfig.minimumWageGross}
                   onChange={(e) => updateField('minimumWageGross', parseFloat(e.target.value) || 0)}
@@ -262,6 +270,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <input
                   type="number"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   step="0.5"
                   value={tisConfig.sgkCeilingMultiplier}
                   onChange={(e) => updateField('sgkCeilingMultiplier', parseFloat(e.target.value) || 7.5)}
@@ -279,6 +288,7 @@ export const TisParametersTab: React.FC<TisParametersTabProps> = ({
                 <input
                   type="number"
                   inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   step="10"
                   value={tisConfig.foodAidDailyExemption}
                   onChange={(e) => updateField('foodAidDailyExemption', parseFloat(e.target.value) || 0)}

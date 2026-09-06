@@ -22,8 +22,11 @@ import { SavedBordrolarModal } from './components/SavedBordrolarModal';
 import { SalaryReportModal } from './components/SalaryReportModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { OfficialPrintableSlip } from './components/OfficialPrintableSlip';
+import { IntroSplashAnimation } from './components/IntroSplashAnimation';
+import { AnimatePresence } from 'motion/react';
 
 export function App() {
+  const [showIntro, setShowIntro] = useState(true);
   const [bordro, setBordro] = useState<BordroData>(() => calculateBordro(DEFAULT_TCDD_BORDRO));
   const [isZamModalOpen, setIsZamModalOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
@@ -258,6 +261,17 @@ export function App() {
               <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
               <span>TİS Zammı</span>
             </button>
+
+            <button
+              id="top-nav-btn-replay-intro"
+              type="button"
+              onClick={() => setShowIntro(true)}
+              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+              title="Giriş animasyonunu tekrar oynat"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Giriş</span>
+            </button>
           </div>
         </div>
       </div>
@@ -356,6 +370,13 @@ export function App() {
 
       {/* PWA Offline Connectivity Indicator */}
       <OfflineIndicator />
+
+      {/* Etkileyici TCDD Demiryolu Giriş Animasyonu */}
+      <AnimatePresence mode="wait">
+        {showIntro && (
+          <IntroSplashAnimation onComplete={() => setShowIntro(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

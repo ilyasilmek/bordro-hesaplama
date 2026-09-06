@@ -222,6 +222,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="text"
                       inputMode="numeric"
+                      pattern="[0-9]*"
                       maxLength={11}
                       value={employee.tcNo}
                       onChange={(e) => updateField('tcNo', e.target.value)}
@@ -295,6 +296,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <input
                           type="number"
                           inputMode="decimal"
+                          pattern="[0-9]*[.,]?[0-9]*"
                           step="0.01"
                           min="0"
                           value={employee.baseDailyWage}
@@ -315,6 +317,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <input
                           type="number"
                           inputMode="decimal"
+                          pattern="[0-9]*[.,]?[0-9]*"
                           step="0.01"
                           min="0"
                           value={employee.baseMonthlyGross}
@@ -344,6 +347,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <input
                         type="number"
                         inputMode="numeric"
+                        pattern="[0-9]*"
                         min="0"
                         max="31"
                         value={employee.workedDays}
@@ -358,6 +362,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <input
                         type="number"
                         inputMode="numeric"
+                        pattern="[0-9]*"
                         min="0"
                         max="10"
                         value={employee.weeklyRestDays}
@@ -372,6 +377,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <input
                         type="number"
                         inputMode="numeric"
+                        pattern="[0-9]*"
                         min="0"
                         max="31"
                         value={employee.paidLeaveDays}
@@ -437,6 +443,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <input
                           type="number"
                           inputMode="numeric"
+                          pattern="[0-9]*"
                           min="0"
                           max="50"
                           value={employee.seniorityYears}
@@ -451,6 +458,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                         <input
                           type="number"
                           inputMode="decimal"
+                          pattern="[0-9]*[.,]?[0-9]*"
                           step="0.5"
                           value={employee.customSeniorityPayDaily ?? tisConfig.seniorityPayPerYear}
                           onChange={(e) => updateField('customSeniorityPayDaily', parseFloat(e.target.value) || 0)}
@@ -551,6 +559,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       min="0"
                       max="100"
                       value={employee.normalOvertimeHours}
@@ -577,6 +586,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       min="0"
                       max="8"
                       value={employee.weekendOvertimeDays}
@@ -603,6 +613,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       min="0"
                       max="15"
                       value={employee.holidayOvertimeDays}
@@ -629,6 +640,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       min="0"
                       max="200"
                       value={employee.nightShiftHours}
@@ -669,6 +681,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <input
                         type="number"
                         inputMode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*"
                         value={employee.foodDailyAmount}
                         onChange={(e) => updateField('foodDailyAmount', parseFloat(e.target.value) || 0)}
                         onFocus={e => e.target.select()}
@@ -681,6 +694,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                       <input
                         type="number"
                         inputMode="numeric"
+                        pattern="[0-9]*"
                         value={employee.foodDays}
                         onChange={(e) => updateField('foodDays', parseInt(e.target.value) || 0)}
                         onFocus={e => e.target.select()}
@@ -701,6 +715,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.transportMonthlyAmount}
                       onChange={(e) => updateField('transportMonthlyAmount', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -713,6 +728,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.fuelAidMonthly}
                       onChange={(e) => updateField('fuelAidMonthly', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -743,6 +759,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="numeric"
+                      pattern="[0-9]*"
                       min="0"
                       max="10"
                       value={employee.childCount}
@@ -761,6 +778,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.clothingSocialAid}
                       onChange={(e) => updateField('clothingSocialAid', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -773,6 +791,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.responsibilityRiskBonus}
                       onChange={(e) => updateField('responsibilityRiskBonus', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -788,6 +807,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.religiousHolidayBonus}
                       onChange={(e) => updateField('religiousHolidayBonus', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -800,6 +820,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.educationAid}
                       onChange={(e) => updateField('educationAid', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -906,6 +927,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.courtGarnishment}
                       onChange={(e) => updateField('courtGarnishment', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -918,6 +940,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                     <input
                       type="number"
                       inputMode="decimal"
+                      pattern="[0-9]*[.,]?[0-9]*"
                       value={employee.salaryAdvance}
                       onChange={(e) => updateField('salaryAdvance', parseFloat(e.target.value) || 0)}
                       onFocus={e => e.target.select()}
@@ -940,6 +963,7 @@ export const MonthlyCalculator: React.FC<MonthlyCalculatorProps> = ({
                   <input
                     type="number"
                     inputMode="decimal"
+                    pattern="[0-9]*[.,]?[0-9]*"
                     step="100"
                     value={employee.cumulativeTaxBaseStart}
                     onChange={(e) => updateField('cumulativeTaxBaseStart', parseFloat(e.target.value) || 0)}
