@@ -199,10 +199,10 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
               type="button"
               onClick={onOpenSavedModal}
               className="px-2.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold rounded shadow-xs transition flex items-center gap-1 cursor-pointer"
-              title="Kaydedilmiş bordroları ve hazır senaryoları görüntüle"
+              title="Kaydedilen formları, özel bordroları ve senaryoları tekrar yükle"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-slate-600" />
-              <span>Kayıtlılar</span>
+              <FolderOpen className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Kayıtlı Formlar</span>
             </button>
           )}
 
@@ -222,7 +222,7 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             type="button"
             onClick={onExportJSON}
             className="px-2 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs rounded shadow-xs transition flex items-center gap-1 cursor-pointer"
-            title="Bordro verisini JSON olarak indir"
+            title="Bordro verisini JSON olarak indir / yedekle"
           >
             <Download className="w-3.5 h-3.5 text-slate-600" />
             Yedekle
@@ -233,10 +233,10 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             type="button"
             onClick={onImportJSON}
             className="px-2 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs rounded shadow-xs transition flex items-center gap-1 cursor-pointer"
-            title="Daha önce yedeklenen bordro JSON dosyasını yükle"
+            title="Daha önce kaydedilen bordro dosyasını (.json) tekrar yükle"
           >
-            <Upload className="w-3.5 h-3.5 text-slate-600" />
-            Yükle
+            <Upload className="w-3.5 h-3.5 text-emerald-600" />
+            Dosyadan Yükle
           </button>
 
           <button

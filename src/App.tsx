@@ -31,7 +31,15 @@ export function App() {
   const [isZamModalOpen, setIsZamModalOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showNotification = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
 
   const handleChange = (updates: Partial<BordroData>) => {
     setBordro(prev => calculateBordro({ ...prev, ...updates }));
@@ -160,13 +168,27 @@ export function App() {
   };
 
   const handleExportJSON = () => {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(bordro, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `tcdd-bordro-${bordro.aySecim}-2026.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    try {
+      const jsonStr = JSON.stringify(bordro, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.href = url;
+      downloadAnchor.download = `tcdd-bordro-${bordro.aySecim}-2026.json`;
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      showNotification('Bordro yedeği JSON dosyası olarak indirildi.');
+    } catch {
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(bordro, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', `tcdd-bordro-${bordro.aySecim}-2026.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
   };
 
   const handleImportClick = () => {
@@ -183,25 +205,41 @@ export function App() {
     const reader = new FileReader();
     reader.onload = event => {
       try {
-        const parsed = JSON.parse(event.target?.result as string);
+        const rawContent = event.target?.result as string;
+        const parsed = JSON.parse(rawContent);
         if (parsed && typeof parsed === 'object') {
           setBordro(calculateBordro({ ...DEFAULT_TCDD_BORDRO, ...parsed }));
+          showNotification(`"${file.name}" bordro dosyası başarıyla yüklendi.`);
+        } else {
+          alert('Dosya geçerli bir bordro nesnesi içermiyor!');
         }
-      } catch (err) {
-        alert('Geçersiz bordro JSON dosyası!');
+      } catch {
+        alert('Seçilen dosya geçerli bir JSON formatında değil! Lütfen doğru bordro dosyasını seçiniz.');
       }
     };
-    reader.readAsText(file);
+    reader.onerror = () => {
+      alert('Dosya okunurken bir hata oluştu.');
+    };
+    reader.readAsText(file, 'UTF-8');
   };
 
   return (
     <div className="min-h-screen bg-slate-100/80 p-2 sm:p-4 2xl:p-6 flex flex-col items-center font-dotmatrix text-slate-900">
-      {/* Hidden File Input for JSON import */}
+      {/* Toast Bildirimi */}
+      {toastMessage && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-emerald-400 border border-emerald-500/50 px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-top-4 duration-200">
+          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Hidden File Input for JSON import - Mobil ve tüm platformlarda tüm dosyaları aktif kılan accept filtresi */}
       <input
+        id="file-input-global-import"
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
-        accept=".json"
+        accept=".json,application/json,text/plain,text/json,application/octet-stream,*/*"
         className="hidden"
       />
 
@@ -357,7 +395,10 @@ export function App() {
         isOpen={isSavedModalOpen}
         onClose={() => setIsSavedModalOpen(false)}
         currentBordro={bordro}
-        onLoadBordro={loaded => setBordro(calculateBordro(loaded))}
+        onLoadBordro={loaded => {
+          setBordro(calculateBordro(loaded));
+          showNotification('Kayıtlı bordro başarıyla yüklendi.');
+        }}
       />
 
       {/* Maaş, Gelir-Gider & Vergi Analiz Raporu Modal */}
@@ -365,7 +406,10 @@ export function App() {
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
         currentBordro={bordro}
-        onLoadBordro={loaded => setBordro(calculateBordro(loaded))}
+        onLoadBordro={loaded => {
+          setBordro(calculateBordro(loaded));
+          showNotification('Seçilen ayın bordrosu başarıyla yüklendi.');
+        }}
       />
 
       {/* PWA Offline Connectivity Indicator */}
