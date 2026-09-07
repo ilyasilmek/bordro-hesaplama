@@ -3,7 +3,7 @@ import {
   RotateCcw,
   Download,
   Upload,
-  Printer,
+  FileDown,
   Calendar,
   Award,
   User,
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { BordroData } from '../types';
 import { MONTHS_TABLE } from '../utils/bordroEngine';
+import { generateMaasBordroPDF } from '../utils/pdfGenerator';
 import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderControlsProps {
@@ -209,17 +210,17 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
           </div>
 
           <button
-            id="btn-print-payslip"
+            id="btn-download-pdf"
             type="button"
             onClick={() => {
               if (onRecalculate) onRecalculate();
-              window.print();
+              generateMaasBordroPDF(bordro);
             }}
-            className="px-2.5 sm:px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wide rounded-lg shadow-xs transition flex items-center gap-1 cursor-pointer"
-            title="Resmi TCDD bordro formatında yazdır / PDF kaydet"
+            className="px-2.5 sm:px-3.5 py-1.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold uppercase tracking-wide rounded-lg shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-blue-600"
+            title="Resmi TCDD antetli bordroyu PDF olarak indir"
           >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Yazdır / PDF</span>
+            <FileDown className="w-4 h-4 text-blue-200 shrink-0" />
+            <span>PDF Olarak İndir</span>
           </button>
 
           <button

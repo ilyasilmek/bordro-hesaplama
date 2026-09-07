@@ -1,4 +1,4 @@
-import { BordroData, EarningItem } from '../types';
+import { BordroData, EarningItem, IkramiyeData } from '../types';
 
 export const TAX_BRACKETS_2026 = [
   { limit: 190000, rate: 0.15 },
@@ -687,3 +687,92 @@ export const DEFAULT_TCDD_BORDRO: BordroData = {
   kesintiTopl: 0,
   netOdeme: 0
 };
+
+export interface IkramiyeTotals {
+  saatUcr: number;
+  emkZam: number;
+  toplamSaatlik: number;
+  ikrSaati: number;
+  ikrGunu: number;
+  brutAylik: number;
+  kidemZammi: number;
+  ikrTutari: number;
+  inikas: number;
+  dengeOdenege: number;
+  toplamGelir: number;
+  gelirVM: number;
+  vergiOrani: number;
+  gelirVergisi: number;
+  damgaVergisi: number;
+  icraTutari: number;
+  kesintiToplami: number;
+  odemeTutari: number;
+}
+
+export function calculateIkramiyeTotals(
+  ikramiye: IkramiyeData,
+  fallbackSaatUcr: number = 0,
+  fallbackEmkZam: number = 0
+): IkramiyeTotals {
+  const isTam = ikramiye.ikramiyeType === 'TAM';
+  const saatUcr = Number(ikramiye.saatUcr) > 0 ? Number(ikramiye.saatUcr) : Number(fallbackSaatUcr) || 0;
+  const emkZam = Number(ikramiye.emkZam) > 0 ? Number(ikramiye.emkZam) : Number(fallbackEmkZam) || 0;
+  const defaultHours = isTam ? 225 : 112.5;
+  const defaultDays = isTam ? 30 : 15;
+  const ikrSaati = Number(ikramiye.ikrSaati) > 0 ? Number(ikramiye.ikrSaati) : defaultHours;
+  const ikrGunu = Number(ikramiye.ikrGunu) > 0 ? Number(ikramiye.ikrGunu) : defaultDays;
+  const brutAylik = Number(ikramiye.brutAylik) || 0;
+  const kidemZammi = Number(ikramiye.kidemZammi) || 0;
+  const inikas = Number(ikramiye.inikas) || 0;
+  const dengeOdenege = Number(ikramiye.dengeOdenege) || 0;
+  const icraTutari = Number(ikramiye.icraTutari) || 0;
+  const vergiOrani = Number(ikramiye.vergiOrani) || 15;
+
+  const toplamSaatlik = saatUcr + emkZam;
+
+  // İkramiye Tutarı = (Saat Ücreti + Emek Zammı) * İkr. Saati + Brüt Aylık + Kıdem Zammı
+  const ikrTutari =
+    Math.round((toplamSaatlik * ikrSaati + brutAylik + kidemZammi) * 100) / 100;
+
+  // Toplam Gelir = İkr. Tutarı + İnikas + Denge Ödeneği
+  const toplamGelir =
+    Math.round((ikrTutari + inikas + dengeOdenege) * 100) / 100;
+
+  // Gelir Vergisi Matrahı = ikrTutari (Kümülatifsiz, TCDD Matbu Kuralı)
+  const gelirVM = ikrTutari;
+
+  // Sabit Vergi Dilimi (Örn: %15, %20, %27)
+  const gelirVergisi = Math.round(gelirVM * (vergiOrani / 100) * 100) / 100;
+
+  // Damga Vergisi (Binde 7.59)
+  const damgaVergisi = Math.round(ikrTutari * 0.00759 * 100) / 100;
+
+  // Kesinti Toplamı = Gelir Vergisi + Damga Vergisi + İcra
+  const kesintiToplami =
+    Math.round((gelirVergisi + damgaVergisi + icraTutari) * 100) / 100;
+
+  // Net Ödeme Tutarı = Toplam Gelir - Kesinti Toplamı
+  const odemeTutari = Math.round((toplamGelir - kesintiToplami) * 100) / 100;
+
+  return {
+    saatUcr,
+    emkZam,
+    toplamSaatlik,
+    ikrSaati,
+    ikrGunu,
+    brutAylik,
+    kidemZammi,
+    ikrTutari,
+    inikas,
+    dengeOdenege,
+    toplamGelir,
+    gelirVM,
+    vergiOrani,
+    gelirVergisi,
+    damgaVergisi,
+    icraTutari,
+    kesintiToplami,
+    odemeTutari
+  };
+}
+

@@ -11,7 +11,7 @@ import {
   LayoutGrid,
   ChevronRight,
   ChevronLeft,
-  Printer,
+  FileDown,
   Gift
 } from 'lucide-react';
 import { BordroData, IkramiyeData, IkramiyeType } from './types';
@@ -21,6 +21,7 @@ import {
   calculateBordro,
   formatCurrency
 } from './utils/bordroEngine';
+import { generateMaasBordroPDF, generateIkramiyeBordroPDF } from './utils/pdfGenerator';
 import { HeaderControls } from './components/HeaderControls';
 import { EmployeeSection } from './components/EmployeeSection';
 import { EarningsAndDeductionsSection } from './components/EarningsAndDeductionsSection';
@@ -29,9 +30,7 @@ import { ZamModal, AppliedZamInfo } from './components/ZamModal';
 import { SavedBordrolarModal } from './components/SavedBordrolarModal';
 import { SalaryReportModal } from './components/SalaryReportModal';
 import { IkramiyeBordroSection } from './components/IkramiyeBordroSection';
-import { IkramiyePrintableSlip } from './components/IkramiyePrintableSlip';
 import { OfflineIndicator } from './components/OfflineIndicator';
-import { OfficialPrintableSlip } from './components/OfficialPrintableSlip';
 import { IntroSplashAnimation } from './components/IntroSplashAnimation';
 import { AnimatePresence } from 'motion/react';
 
@@ -489,6 +488,26 @@ export function App() {
                 <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping ml-0.5 shrink-0" />
               )}
             </button>
+
+            {/* HIZLI RESMİ PDF İNDİR BUTONU */}
+            <button
+              id="top-nav-btn-download-pdf"
+              type="button"
+              onClick={() => {
+                if (viewMode === 'ikramiye') {
+                  generateIkramiyeBordroPDF(bordro, ikramiyeData);
+                  showNotification('İkramiye bordrosu resmi TCDD PDF formatında indirildi.');
+                } else {
+                  generateMaasBordroPDF(bordro);
+                  showNotification('Maaş bordrosu resmi TCDD PDF formatında indirildi.');
+                }
+              }}
+              className="px-2 sm:px-3.5 py-1.5 sm:py-2 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md border border-blue-400/50"
+              title="Aktif bordroyu resmi TCDD antetli PDF olarak indir"
+            >
+              <FileDown className="w-3.5 h-3.5 text-blue-200 shrink-0" />
+              <span className="truncate uppercase font-black">PDF İndir</span>
+            </button>
           </div>
         </div>
       </div>
@@ -534,13 +553,13 @@ export function App() {
                 <div className="flex items-center gap-1.5 bg-emerald-950/80 border border-emerald-500/40 px-2 sm:px-2.5 py-1 rounded-lg">
                   <span className="text-emerald-300 text-[10px] sm:text-[11px] font-bold uppercase">Gelir:</span>
                   <span className="font-extrabold text-emerald-400 font-mono text-xs sm:text-sm">
-                    {formatCurrency(bordro.toplamGelir)} ₺
+                    {formatCurrency(bordro.gelirToplami)} ₺
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-amber-950/80 border border-amber-500/40 px-2 sm:px-2.5 py-1 rounded-lg">
                   <span className="text-amber-300 text-[10px] sm:text-[11px] font-bold uppercase">Kesinti:</span>
                   <span className="font-extrabold text-amber-400 font-mono text-xs sm:text-sm">
-                    {formatCurrency(bordro.toplamKesinti)} ₺
+                    {formatCurrency(bordro.kesintiTopl)} ₺
                   </span>
                 </div>
               </div>
@@ -550,7 +569,7 @@ export function App() {
                   NET:
                 </span>
                 <span className="font-black text-xs sm:text-base text-white font-mono drop-shadow-xs">
-                  {formatCurrency(bordro.netUcret)} ₺
+                  {formatCurrency(bordro.netOdeme)} ₺
                 </span>
               </div>
             </div>
@@ -592,7 +611,7 @@ export function App() {
                       : 'bg-emerald-200/90 text-emerald-900'
                   }`}
                 >
-                  {formatCurrency(bordro.toplamGelir)} ₺
+                  {formatCurrency(bordro.gelirToplami)} ₺
                 </span>
               </button>
 
@@ -616,7 +635,7 @@ export function App() {
                       : 'bg-amber-200/90 text-amber-900'
                   }`}
                 >
-                  {formatCurrency(bordro.toplamKesinti)} ₺
+                  {formatCurrency(bordro.kesintiTopl)} ₺
                 </span>
               </button>
 
@@ -767,12 +786,13 @@ export function App() {
                     type="button"
                     onClick={() => {
                       handleRecalculate();
-                      window.print();
+                      generateMaasBordroPDF(bordro);
                     }}
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                    className="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs border border-blue-600"
+                    title="Resmi TCDD antetli bordroyu PDF olarak indir"
                   >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>Yazdır / PDF İndir</span>
+                    <FileDown className="w-4 h-4 text-blue-200" />
+                    <span>PDF Olarak İndir</span>
                   </button>
                 </div>
               </div>
@@ -828,13 +848,6 @@ export function App() {
       </>
     )}
   </div>
-
-  {/* Otantik TCDD Nokta Vuruşlu Tek Sayfa Yazdırma Bordrosu (Sadece print esnasında görünür) */}
-  {viewMode === 'ikramiye' ? (
-    <IkramiyePrintableSlip bordro={bordro} ikramiyeData={ikramiyeData} />
-  ) : (
-    <OfficialPrintableSlip bordro={bordro} />
-  )}
 
       {/* TİS Zammı Simülatörü Modal */}
       <ZamModal

@@ -5,7 +5,7 @@ import {
   Scissors,
   Check,
   RotateCcw,
-  Printer,
+  FileDown,
   ArrowRight,
   TrendingUp,
   Percent,
@@ -14,7 +14,8 @@ import {
   FileSpreadsheet
 } from 'lucide-react';
 import { BordroData, IkramiyeData, IkramiyeType } from '../types';
-import { formatCurrency } from '../utils/bordroEngine';
+import { formatCurrency, calculateIkramiyeTotals } from '../utils/bordroEngine';
+import { generateIkramiyeBordroPDF } from '../utils/pdfGenerator';
 
 interface IkramiyeBordroSectionProps {
   bordro: BordroData; // Personel kimlik bilgileri (sicil, ad-soyad vb.) için
@@ -73,39 +74,18 @@ export const IkramiyeBordroSection: React.FC<IkramiyeBordroSectionProps> = ({
     }));
   };
 
-  // 3. Hesaplamalar (Birebir Otantik Formül)
-  const toplamSaatlik = (Number(saatUcr) || 0) + (Number(emkZam) || 0);
-
-  // İkramiye Tutarı = (Saat Ücreti + Emek Zammı) * İkr. Saati + Brüt Aylık + Kıdem Zammı
-  const ikrTutari =
-    Math.round(
-      (toplamSaatlik * (Number(ikrSaati) || 0) +
-        (Number(brutAylik) || 0) +
-        (Number(kidemZammi) || 0)) *
-        100
-    ) / 100;
-
-  // Toplam Gelir = İkr. Tutarı + İnikas + Denge Ödeneği
-  const toplamGelir =
-    Math.round(
-      (ikrTutari + (Number(inikas) || 0) + (Number(dengeOdenege) || 0)) * 100
-    ) / 100;
-
-  // Gelir Vergisi Matrahı
-  const gelirVM = ikrTutari;
-
-  // 5. Madde: SABİT VERGİ DİLİMİNE GÖRE HESAPLAMA (Kümülatif Dikkate Alınmaz!)
-  const gelirVergisi = Math.round(gelirVM * (vergiOrani / 100) * 100) / 100;
-
-  // Damga Vergisi (Binde 7.59)
-  const damgaVergisi = Math.round(ikrTutari * 0.00759 * 100) / 100;
-
-  // Kesinti Toplamı = Gelir Vergisi + Damga Vergisi + İcra Tutarı
-  const kesintiToplami =
-    Math.round((gelirVergisi + damgaVergisi + (Number(icraTutari) || 0)) * 100) / 100;
-
-  // Ödeme Tutarı = Toplam Gelir - Kesinti Toplamı
-  const odemeTutari = Math.round((toplamGelir - kesintiToplami) * 100) / 100;
+  // 3. Hesaplamalar (Merkezi calculateIkramiyeTotals motorundan alınır - Birebir TCDD Otantik Formülü)
+  const totals = calculateIkramiyeTotals(ikramiyeData, bordro.saatUcr, bordro.emkZam);
+  const {
+    toplamSaatlik,
+    ikrTutari,
+    toplamGelir,
+    gelirVM,
+    gelirVergisi,
+    damgaVergisi,
+    kesintiToplami,
+    odemeTutari
+  } = totals;
 
   return (
     <section
@@ -217,15 +197,15 @@ export const IkramiyeBordroSection: React.FC<IkramiyeBordroSectionProps> = ({
               </button>
             )}
 
-            {/* Yazdır / PDF Butonu */}
+            {/* PDF Olarak İndir Butonu */}
             <button
               type="button"
-              onClick={() => window.print()}
-              className="px-2.5 sm:px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold flex items-center gap-1 transition cursor-pointer shadow-xs"
-              title="İkramiye bordrosunu yazdır / PDF kaydet"
+              onClick={() => generateIkramiyeBordroPDF(bordro, ikramiyeData)}
+              className="px-2.5 sm:px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-sm border border-amber-500"
+              title="Resmi TCDD antetli ikramiye bordrosunu PDF olarak indir"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Yazdır</span>
+              <FileDown className="w-4 h-4 text-amber-100 shrink-0" />
+              <span>PDF Olarak İndir</span>
             </button>
 
             {/* Maaş Bordrosuna Dön */}
