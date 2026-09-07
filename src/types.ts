@@ -376,3 +376,20 @@ export interface TcddMonthlySlip {
   netOdeme: number;            // NET ELE GEÇEN
   asgariGecIn: number;         // 0.00
 }
+
+export type IkramiyeType = 'TAM' | 'YARIM';
+
+export interface IkramiyeData {
+  saatUcr: number;
+  emkZam: number;
+  ikrSaati: number;
+  ikrGunu: number;
+  brutAylik: number;
+  kidemZammi: number;
+  inikas: number;
+  dengeOdenege: number;
+  icraTutari: number;
+  vergiOrani: number; // 15, 20, 27, 35, 40 (Sabit Vergi Dilimi)
+  ikramiyeType: IkramiyeType;
+  donemLabel?: string;
+}

@@ -11,9 +11,10 @@ import {
   LayoutGrid,
   ChevronRight,
   ChevronLeft,
-  Printer
+  Printer,
+  Gift
 } from 'lucide-react';
-import { BordroData } from './types';
+import { BordroData, IkramiyeData, IkramiyeType } from './types';
 import {
   DEFAULT_TCDD_BORDRO,
   SAMPLE_AUGUST_2026_BORDRO,
@@ -24,19 +25,56 @@ import { HeaderControls } from './components/HeaderControls';
 import { EmployeeSection } from './components/EmployeeSection';
 import { EarningsAndDeductionsSection } from './components/EarningsAndDeductionsSection';
 import { StatutorySection } from './components/StatutorySection';
-import { ZamModal } from './components/ZamModal';
+import { ZamModal, AppliedZamInfo } from './components/ZamModal';
 import { SavedBordrolarModal } from './components/SavedBordrolarModal';
 import { SalaryReportModal } from './components/SalaryReportModal';
+import { IkramiyeBordroSection } from './components/IkramiyeBordroSection';
+import { IkramiyePrintableSlip } from './components/IkramiyePrintableSlip';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { OfficialPrintableSlip } from './components/OfficialPrintableSlip';
 import { IntroSplashAnimation } from './components/IntroSplashAnimation';
 import { AnimatePresence } from 'motion/react';
 
 type TabType = 'ozluk' | 'hakedisler' | 'kesintiler' | 'sgk-vergi' | 'tumu';
+type ViewMode = 'maas' | 'ikramiye';
+
+// 4. Madde: Normal bordrodan TAMAMEN BAĞIMSIZ İkramiye Veri Yapısı
+const DEFAULT_IKRAMIYE_DATA: IkramiyeData = {
+  saatUcr: 385.97,
+  emkZam: 19.05,
+  ikrSaati: 225,
+  ikrGunu: 184,
+  brutAylik: 0,
+  kidemZammi: 0,
+  inikas: 0,
+  dengeOdenege: 0,
+  icraTutari: 0,
+  vergiOrani: 27, // Sabit Vergi Dilimi (TAM için %27)
+  ikramiyeType: 'TAM'
+};
+
+const ZEROED_IKRAMIYE_DATA: IkramiyeData = {
+  saatUcr: 0,
+  emkZam: 0,
+  ikrSaati: 0,
+  ikrGunu: 0,
+  brutAylik: 0,
+  kidemZammi: 0,
+  inikas: 0,
+  dengeOdenege: 0,
+  icraTutari: 0,
+  vergiOrani: 27,
+  ikramiyeType: 'TAM'
+};
 
 export function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [bordro, setBordro] = useState<BordroData>(() => calculateBordro(DEFAULT_TCDD_BORDRO));
+  // 4. Madde: Bağımsız İkramiye State'i
+  const [ikramiyeData, setIkramiyeData] = useState<IkramiyeData>(DEFAULT_IKRAMIYE_DATA);
+  // 1. Madde: Uygulanan Zam Bilgisi ve Kontrolü
+  const [lastAppliedZam, setLastAppliedZam] = useState<AppliedZamInfo | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('maas');
   const [activeTab, setActiveTab] = useState<TabType>('ozluk');
   const [isZamModalOpen, setIsZamModalOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
@@ -77,7 +115,50 @@ export function App() {
     });
   };
 
+  const handleResetIkramiye = () => {
+    setIkramiyeData(ZEROED_IKRAMIYE_DATA);
+    showNotification('İkramiye formu başarıyla sıfırlandı ve tüm alanlar temizlendi.');
+  };
+
+  const handleRestoreDefaultIkramiye = (type: IkramiyeType = 'TAM') => {
+    if (type === 'TAM') {
+      setIkramiyeData({
+        saatUcr: 385.97,
+        emkZam: 19.05,
+        ikrSaati: 225,
+        ikrGunu: 184,
+        brutAylik: 0,
+        kidemZammi: 0,
+        inikas: 0,
+        dengeOdenege: 0,
+        icraTutari: 0,
+        vergiOrani: 27,
+        ikramiyeType: 'TAM'
+      });
+    } else {
+      setIkramiyeData({
+        saatUcr: 385.97,
+        emkZam: 19.05,
+        ikrSaati: 97.5,
+        ikrGunu: 92,
+        brutAylik: 0,
+        kidemZammi: 0,
+        inikas: 0,
+        dengeOdenege: 0,
+        icraTutari: 0,
+        vergiOrani: 20,
+        ikramiyeType: 'YARIM'
+      });
+    }
+    showNotification(`Varsayılan TCDD ${type} İkramiye değerleri yüklendi.`);
+  };
+
   const handleReset = () => {
+    if (viewMode === 'ikramiye') {
+      handleResetIkramiye();
+      return;
+    }
+
     setBordro(prev => {
       if (prev.calisanStatusu === 'normal') {
         return calculateBordro({
@@ -111,6 +192,11 @@ export function App() {
   };
 
   const handleZero = () => {
+    if (viewMode === 'ikramiye') {
+      handleResetIkramiye();
+      return;
+    }
+
     setBordro(prev => {
       const isNormal = prev.calisanStatusu === 'normal';
       const isEngelli = prev.calisanStatusu === 'engelli';
@@ -146,35 +232,83 @@ export function App() {
     zamRate: number,
     isPartial: boolean,
     oldDays: number,
-    newDays: number
+    newDays: number,
+    target: 'maas' | 'ikramiye' | 'both' = 'both'
   ) => {
-    setBordro(prev => {
-      const rateMultiplier = 1 + zamRate / 100;
-      let effectiveMultiplier = rateMultiplier;
+    const rateMultiplier = 1 + zamRate / 100;
+    let effectiveMultiplier = rateMultiplier;
 
-      if (isPartial && oldDays + newDays > 0) {
-        effectiveMultiplier = (oldDays * 1.0 + newDays * rateMultiplier) / (oldDays + newDays);
-      }
+    if (isPartial && oldDays + newDays > 0) {
+      effectiveMultiplier = (oldDays * 1.0 + newDays * rateMultiplier) / (oldDays + newDays);
+    }
 
-      const newSaatUcr = prev.saatUcr * effectiveMultiplier;
-      const newEmkZam = prev.emkZam * effectiveMultiplier;
-      const newIase = prev.iaseGunlukKatsayi * effectiveMultiplier;
-      const newHizmet = prev.hizmetYillikKatsayi * effectiveMultiplier;
-      const newSosyal = prev.birlestirilmSosyalYardim * effectiveMultiplier;
-      const newPostabasi = (prev.postabasiSaatUcreti ?? 4.84) * effectiveMultiplier;
-      const newSendika = prev.sendikaAidati * effectiveMultiplier;
+    // 4. Madde: Maaş bordrosuna uygula
+    if (target === 'maas' || target === 'both') {
+      setBordro(prev => {
+        const newSaatUcr = prev.saatUcr * effectiveMultiplier;
+        const newEmkZam = prev.emkZam * effectiveMultiplier;
+        const newIase = prev.iaseGunlukKatsayi * effectiveMultiplier;
+        const newHizmet = prev.hizmetYillikKatsayi * effectiveMultiplier;
+        const newSosyal = prev.birlestirilmSosyalYardim * effectiveMultiplier;
+        const newPostabasi = (prev.postabasiSaatUcreti ?? 4.84) * effectiveMultiplier;
+        const newSendika = prev.sendikaAidati * effectiveMultiplier;
 
-      return calculateBordro({
-        ...prev,
-        saatUcr: newSaatUcr,
-        emkZam: newEmkZam,
-        iaseGunlukKatsayi: newIase,
-        hizmetYillikKatsayi: newHizmet,
-        birlestirilmSosyalYardim: newSosyal,
-        postabasiSaatUcreti: newPostabasi,
-        sendikaAidati: newSendika
+        return calculateBordro({
+          ...prev,
+          saatUcr: newSaatUcr,
+          emkZam: newEmkZam,
+          iaseGunlukKatsayi: newIase,
+          hizmetYillikKatsayi: newHizmet,
+          birlestirilmSosyalYardim: newSosyal,
+          postabasiSaatUcreti: newPostabasi,
+          sendikaAidati: newSendika
+        });
       });
+    }
+
+    // 4. Madde: İkramiyeye bağımsız olarak uygula
+    if (target === 'ikramiye' || target === 'both') {
+      setIkramiyeData(prev => {
+        const baseSaatUcr = prev.saatUcr > 0 ? prev.saatUcr : bordro.saatUcr;
+        const baseEmkZam = prev.emkZam > 0 ? prev.emkZam : bordro.emkZam;
+        return {
+          ...prev,
+          saatUcr: Math.round(baseSaatUcr * effectiveMultiplier * 1000000) / 1000000,
+          emkZam: Math.round(baseEmkZam * effectiveMultiplier * 1000000) / 1000000
+        };
+      });
+    }
+
+    // 1. Madde: Uygulanan zam kaydını tut
+    const timeStr = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    setLastAppliedZam({
+      rate: zamRate,
+      isPartial,
+      target,
+      appliedAt: timeStr
     });
+
+    const targetLabel =
+      target === 'both'
+        ? 'Maaş ve İkramiyeye (Tüm Bordrolara)'
+        : target === 'ikramiye'
+        ? 'İkramiye Bordrosuna'
+        : 'Maaş Bordrosuna';
+    showNotification(`%${zamRate} oranında TİS zammı ${targetLabel} başarıyla uygulandı.`);
+  };
+
+  const handleSyncSaatUcretiToIkramiye = () => {
+    setIkramiyeData(prev => ({
+      ...prev,
+      saatUcr: bordro.saatUcr,
+      emkZam: bordro.emkZam
+    }));
+    showNotification(`Maaş bordrosundaki Saat Ücreti (${bordro.saatUcr.toFixed(4)} ₺) ve Emek Zammı ikramiyeye aktarıldı.`);
+  };
+
+  const handleResetZam = () => {
+    setLastAppliedZam(null);
+    showNotification('Zam kaydı sıfırlandı. Yeni oran uygulayabilirsiniz.');
   };
 
   const handleExportJSON = () => {
@@ -275,13 +409,13 @@ export function App() {
             </div>
           </div>
 
-          {/* Mobilde 4 buton tam genişlikte 4 eşit sütun, masaüstünde flex */}
-          <div className="grid grid-cols-4 sm:flex items-center gap-1.5 w-full md:w-auto">
+          {/* Mobilde 6 buton tam genişlikte, masaüstünde flex */}
+          <div className="grid grid-cols-6 sm:flex items-center gap-1 sm:gap-1.5 w-full md:w-auto">
             <button
               id="top-nav-btn-open-report"
               type="button"
               onClick={() => setIsReportModalOpen(true)}
-              className="px-2 sm:px-3.5 py-1.5 sm:py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs border border-emerald-500/50"
+              className="px-1.5 sm:px-3 py-1.5 sm:py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs border border-emerald-500/50"
               title="Geçmiş Maaşlar, Toplam Gelir-Gider ve Vergi Raporu (Şifreli: 1510)"
             >
               <BarChart3 className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
@@ -292,7 +426,7 @@ export function App() {
               id="top-nav-btn-saved"
               type="button"
               onClick={() => setIsSavedModalOpen(true)}
-              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
+              className="px-1.5 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] sm:text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
               title="Kaydedilmiş bordrolar"
             >
               <FolderOpen className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -303,7 +437,7 @@ export function App() {
               id="top-nav-btn-zam"
               type="button"
               onClick={() => setIsZamModalOpen(true)}
-              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
+              className="px-1.5 sm:px-3 py-1.5 sm:py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
               title="TİS Zammı Simülatörü"
             >
               <TrendingUp className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -314,11 +448,46 @@ export function App() {
               id="top-nav-btn-replay-intro"
               type="button"
               onClick={() => setShowIntro(true)}
-              className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
+              className="px-1.5 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] sm:text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs"
               title="Giriş animasyonunu tekrar oynat"
             >
               <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span className="truncate">Giriş</span>
+            </button>
+
+            {/* MAAŞ BORDROSU MOD BUTONU */}
+            <button
+              id="top-nav-btn-maas"
+              type="button"
+              onClick={() => setViewMode('maas')}
+              className={`px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition cursor-pointer shadow-xs border ${
+                viewMode === 'maas'
+                  ? 'bg-blue-600 text-white border-blue-400 ring-2 ring-blue-300 font-extrabold'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+              }`}
+              title="Aylık Maaş Bordrosu Görünümüne Geç"
+            >
+              <LayoutGrid className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Maaş</span>
+            </button>
+
+            {/* İKRAMİYE BORDROSU BUTONU - Canlı Altın/Kehribar Tasarım */}
+            <button
+              id="top-nav-btn-ikramiye"
+              type="button"
+              onClick={() => setViewMode(prev => (prev === 'ikramiye' ? 'maas' : 'ikramiye'))}
+              className={`px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-black flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md border-2 ${
+                viewMode === 'ikramiye'
+                  ? 'bg-amber-400 text-slate-950 border-amber-100 ring-4 ring-amber-300/90 shadow-amber-500/40 scale-105'
+                  : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 border-amber-300 ring-1 ring-amber-400/50'
+              }`}
+              title="TCDD İşçi Tam / Yarım İkramiye Bordrosu Görünümüne Geç"
+            >
+              <Gift className="w-3.5 h-3.5 text-slate-950 shrink-0 stroke-[2.5]" />
+              <span className="truncate uppercase font-black">İkramiye</span>
+              {viewMode === 'ikramiye' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping ml-0.5 shrink-0" />
+              )}
             </button>
           </div>
         </div>
@@ -326,143 +495,161 @@ export function App() {
 
       {/* Ekrandaki Canlı Bordro Düzenleyici (Yazdırma sırasında gizlenir) */}
       <div id="interactive-editor-view" className="w-full flex flex-col items-center">
-        {/* Action Bar & Document Top Controls */}
-        <HeaderControls
-          bordro={bordro}
-          onChange={handleChange}
-          onReset={handleReset}
-          onZero={handleZero}
-          onRecalculate={handleRecalculate}
-          onOpenZamModal={() => setIsZamModalOpen(true)}
-          onOpenSavedModal={() => setIsSavedModalOpen(true)}
-          onExportJSON={handleExportJSON}
-          onImportJSON={handleImportClick}
-        />
+        {viewMode === 'ikramiye' ? (
+          <IkramiyeBordroSection
+            bordro={bordro}
+            ikramiyeData={ikramiyeData}
+            onChangeIkramiye={setIkramiyeData}
+            onResetIkramiye={handleResetIkramiye}
+            onRestoreDefaultIkramiye={handleRestoreDefaultIkramiye}
+            onSyncSaatUcretiFromBordro={handleSyncSaatUcretiToIkramiye}
+            onOpenZamModal={() => setIsZamModalOpen(true)}
+            onSwitchToMaas={() => setViewMode('maas')}
+          />
+        ) : (
+          <>
+            {/* Action Bar & Document Top Controls */}
+            <HeaderControls
+              bordro={bordro}
+              onChange={handleChange}
+              onReset={handleReset}
+              onZero={handleZero}
+              onRecalculate={handleRecalculate}
+              onOpenZamModal={() => setIsZamModalOpen(true)}
+              onOpenSavedModal={() => setIsSavedModalOpen(true)}
+              onExportJSON={handleExportJSON}
+              onImportJSON={handleImportClick}
+            />
 
-        {/* Main Single-View Payslip Card */}
-        <main
-          id="official-payroll-slip"
-          className="payslip-container w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] bg-white border border-slate-300 rounded-lg p-2.5 sm:p-4 2xl:p-6 shadow-xs"
-        >
-          {/* TAB ÇUBUĞU (Özlük Bilgileri, Hakedişler, Kesintiler, SGK-Vergi, Tüm Bordro) */}
-          <div className="mb-3 border-b border-slate-200 pb-2.5 no-print">
+            {/* Main Single-View Payslip Card */}
+            <main
+              id="official-payroll-slip"
+              className="payslip-container w-full max-w-7xl 2xl:max-w-[1920px] 3xl:max-w-[2560px] bg-white border border-slate-300 rounded-lg p-2.5 sm:p-4 2xl:p-6 shadow-xs"
+            >
+              {/* TAB ÇUBUĞU (Özlük Bilgileri, Hakedişler, Kesintiler, SGK-Vergi, Tüm Bordro) - Canlı ve Yüksek Görünürlük */}
+          <div className="mb-3.5 border-b border-slate-200 pb-3 no-print">
             {/* Hızlı Net Maaş ve Durum Bilgi Şeridi */}
-            <div className="mb-2.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white px-3 py-2 rounded-lg flex items-center justify-between gap-2 shadow-xs text-xs font-dotmatrix">
-              <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400 text-[10.5px] sm:text-xs">Toplam Gelir:</span>
-                  <span className="font-bold text-emerald-400 font-mono text-xs sm:text-sm">
+            <div className="mb-2.5 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white px-3 sm:px-4 py-2 rounded-xl flex items-center justify-between gap-2 shadow-sm text-xs font-dotmatrix border border-slate-800">
+              <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                <div className="flex items-center gap-1.5 bg-emerald-950/80 border border-emerald-500/40 px-2 sm:px-2.5 py-1 rounded-lg">
+                  <span className="text-emerald-300 text-[10px] sm:text-[11px] font-bold uppercase">Gelir:</span>
+                  <span className="font-extrabold text-emerald-400 font-mono text-xs sm:text-sm">
                     {formatCurrency(bordro.toplamGelir)} ₺
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400 text-[10.5px] sm:text-xs">Toplam Kesinti:</span>
-                  <span className="font-bold text-amber-400 font-mono text-xs sm:text-sm">
+                <div className="flex items-center gap-1.5 bg-amber-950/80 border border-amber-500/40 px-2 sm:px-2.5 py-1 rounded-lg">
+                  <span className="text-amber-300 text-[10px] sm:text-[11px] font-bold uppercase">Kesinti:</span>
+                  <span className="font-extrabold text-amber-400 font-mono text-xs sm:text-sm">
                     {formatCurrency(bordro.toplamKesinti)} ₺
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 bg-emerald-950 border border-emerald-500/60 px-2.5 py-1 rounded-md shrink-0 shadow-inner">
-                <span className="text-[10px] sm:text-xs text-emerald-300 font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 bg-emerald-600 border-2 border-emerald-300 px-3 py-1 rounded-lg shrink-0 shadow-md animate-none">
+                <span className="text-[10px] sm:text-xs text-white font-black uppercase tracking-wider">
                   NET:
                 </span>
-                <span className="font-extrabold text-xs sm:text-base text-white font-mono">
+                <span className="font-black text-xs sm:text-base text-white font-mono drop-shadow-xs">
                   {formatCurrency(bordro.netUcret)} ₺
                 </span>
               </div>
             </div>
 
-            {/* Tab Butonları */}
-            <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto pb-1 scrollbar-none font-dotmatrix">
-              {/* Tab 1: Özlük Bilgileri */}
+            {/* Renkli ve Belirgin Tab Butonları */}
+            <div className="bg-slate-100/90 p-1.5 rounded-xl border-2 border-slate-200/90 shadow-2xs flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none font-dotmatrix">
+              {/* Tab 1: Özlük Bilgileri (Mavi Tema) */}
               <button
+                id="tab-btn-ozluk"
                 type="button"
                 onClick={() => setActiveTab('ozluk')}
-                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                className={`px-3 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                   activeTab === 'ozluk'
-                    ? 'bg-sky-700 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                    ? 'bg-sky-600 hover:bg-sky-700 text-white ring-2 ring-sky-300 border-2 border-sky-700 shadow-md'
+                    : 'bg-sky-50 hover:bg-sky-100 text-sky-950 border-2 border-sky-300/80 shadow-2xs'
                 }`}
               >
-                <User className="w-3.5 h-3.5 shrink-0" />
-                <span>Özlük Bilgileri</span>
+                <User className={`w-4 h-4 shrink-0 ${activeTab === 'ozluk' ? 'text-white' : 'text-sky-700'}`} />
+                <span>ÖZLÜK BİLGİLERİ</span>
               </button>
 
-              {/* Tab 2: Hakedişler */}
+              {/* Tab 2: Hakedişler (Yeşil Tema) */}
               <button
+                id="tab-btn-hakedisler"
                 type="button"
                 onClick={() => setActiveTab('hakedisler')}
-                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                className={`px-3 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                   activeTab === 'hakedisler'
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white ring-2 ring-emerald-300 border-2 border-emerald-700 shadow-md'
+                    : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border-2 border-emerald-300/80 shadow-2xs'
                 }`}
               >
-                <Coins className="w-3.5 h-3.5 shrink-0" />
-                <span>Hakedişler</span>
+                <Coins className={`w-4 h-4 shrink-0 ${activeTab === 'hakedisler' ? 'text-white' : 'text-emerald-700'}`} />
+                <span>HAKEDİŞLER</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                  className={`text-[10.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
                     activeTab === 'hakedisler'
                       ? 'bg-emerald-800 text-emerald-100'
-                      : 'bg-emerald-100 text-emerald-800'
+                      : 'bg-emerald-200/90 text-emerald-900'
                   }`}
                 >
-                  {formatCurrency(bordro.toplamGelir)}
+                  {formatCurrency(bordro.toplamGelir)} ₺
                 </span>
               </button>
 
-              {/* Tab 3: Kesintiler */}
+              {/* Tab 3: Kesintiler (Amber/Turuncu Tema) */}
               <button
+                id="tab-btn-kesintiler"
                 type="button"
                 onClick={() => setActiveTab('kesintiler')}
-                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                className={`px-3 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                   activeTab === 'kesintiler'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                    ? 'bg-amber-600 hover:bg-amber-700 text-white ring-2 ring-amber-300 border-2 border-amber-700 shadow-md'
+                    : 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-2 border-amber-300/80 shadow-2xs'
                 }`}
               >
-                <Scissors className="w-3.5 h-3.5 shrink-0" />
-                <span>Kesintiler</span>
+                <Scissors className={`w-4 h-4 shrink-0 ${activeTab === 'kesintiler' ? 'text-white' : 'text-amber-700'}`} />
+                <span>KESİNTİLER</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                  className={`text-[10.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
                     activeTab === 'kesintiler'
-                      ? 'bg-amber-700 text-amber-100'
-                      : 'bg-amber-100 text-amber-800'
+                      ? 'bg-amber-800 text-amber-100'
+                      : 'bg-amber-200/90 text-amber-900'
                   }`}
                 >
-                  {formatCurrency(bordro.toplamKesinti)}
+                  {formatCurrency(bordro.toplamKesinti)} ₺
                 </span>
               </button>
 
-              {/* Tab 4: SGK - Vergi */}
+              {/* Tab 4: SGK - Vergi (Mor/İndigo Tema) */}
               <button
+                id="tab-btn-sgk-vergi"
                 type="button"
                 onClick={() => setActiveTab('sgk-vergi')}
-                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                className={`px-3 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                   activeTab === 'sgk-vergi'
-                    ? 'bg-indigo-700 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                    ? 'bg-purple-700 hover:bg-purple-800 text-white ring-2 ring-purple-300 border-2 border-purple-800 shadow-md'
+                    : 'bg-purple-50 hover:bg-purple-100 text-purple-950 border-2 border-purple-300/80 shadow-2xs'
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                <span>SGK & Vergi</span>
+                <ShieldCheck className={`w-4 h-4 shrink-0 ${activeTab === 'sgk-vergi' ? 'text-white' : 'text-purple-700'}`} />
+                <span>SGK & VERGİ</span>
               </button>
 
-              {/* Tab 5: Tüm Bordro */}
+              {/* Tab 5: Tüm Bordro (Koyu Grafit Tema) */}
               <button
+                id="tab-btn-tumu"
                 type="button"
                 onClick={() => setActiveTab('tumu')}
-                className={`px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                className={`px-3 py-2 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                   activeTab === 'tumu'
-                    ? 'bg-slate-800 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                    ? 'bg-slate-900 hover:bg-black text-white ring-2 ring-slate-400 border-2 border-slate-950 shadow-md'
+                    : 'bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-300 shadow-2xs'
                 }`}
                 title="Tüm bölümleri yan yana klasik bordro görünümünde göster"
               >
-                <LayoutGrid className="w-3.5 h-3.5 shrink-0" />
-                <span className="hidden sm:inline">Tüm Bordro</span>
-                <span className="sm:hidden">Tümü</span>
+                <LayoutGrid className={`w-4 h-4 shrink-0 ${activeTab === 'tumu' ? 'text-white' : 'text-slate-700'}`} />
+                <span className="hidden sm:inline">TÜM BORDRO</span>
+                <span className="sm:hidden">TÜMÜ</span>
               </button>
             </div>
           </div>
@@ -638,17 +825,27 @@ export function App() {
             </div>
           </footer>
         </main>
-      </div>
+      </>
+    )}
+  </div>
 
-      {/* Otantik TCDD Nokta Vuruşlu Tek Sayfa Yazdırma Bordrosu (Sadece print esnasında görünür) */}
-      <OfficialPrintableSlip bordro={bordro} />
+  {/* Otantik TCDD Nokta Vuruşlu Tek Sayfa Yazdırma Bordrosu (Sadece print esnasında görünür) */}
+  {viewMode === 'ikramiye' ? (
+    <IkramiyePrintableSlip bordro={bordro} ikramiyeData={ikramiyeData} />
+  ) : (
+    <OfficialPrintableSlip bordro={bordro} />
+  )}
 
       {/* TİS Zammı Simülatörü Modal */}
       <ZamModal
         isOpen={isZamModalOpen}
         onClose={() => setIsZamModalOpen(false)}
         bordro={bordro}
+        ikramiyeData={ikramiyeData}
+        activeView={viewMode}
+        lastAppliedZam={lastAppliedZam}
         onApplyZam={handleApplyZam}
+        onResetZam={handleResetZam}
       />
 
       {/* Kaydedilmiş Bordrolar & Senaryolar Modal */}
