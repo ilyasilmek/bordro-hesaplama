@@ -29,6 +29,7 @@ import { StatutorySection } from './components/StatutorySection';
 import { ZamModal, AppliedZamInfo } from './components/ZamModal';
 import { SavedBordrolarModal } from './components/SavedBordrolarModal';
 import { SalaryReportModal } from './components/SalaryReportModal';
+import { RehberModal } from './components/RehberModal';
 import { IkramiyeBordroSection } from './components/IkramiyeBordroSection';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { IntroSplashAnimation } from './components/IntroSplashAnimation';
@@ -78,6 +79,7 @@ export function App() {
   const [isZamModalOpen, setIsZamModalOpen] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isRehberModalOpen, setIsRehberModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -523,6 +525,7 @@ export function App() {
             onRestoreDefaultIkramiye={handleRestoreDefaultIkramiye}
             onSyncSaatUcretiFromBordro={handleSyncSaatUcretiToIkramiye}
             onOpenZamModal={() => setIsZamModalOpen(true)}
+            onOpenRehberModal={() => setIsRehberModalOpen(true)}
             onSwitchToMaas={() => setViewMode('maas')}
           />
         ) : (
@@ -536,6 +539,7 @@ export function App() {
               onRecalculate={handleRecalculate}
               onOpenZamModal={() => setIsZamModalOpen(true)}
               onOpenSavedModal={() => setIsSavedModalOpen(true)}
+              onOpenRehberModal={() => setIsRehberModalOpen(true)}
               onExportJSON={handleExportJSON}
               onImportJSON={handleImportClick}
             />
@@ -881,6 +885,13 @@ export function App() {
           setBordro(calculateBordro(loaded));
           showNotification('Seçilen ayın bordrosu başarıyla yüklendi.');
         }}
+      />
+
+      {/* Rehber, Kullanım Kılavuzu, Düğmeler ve Mevzuat Modal */}
+      <RehberModal
+        isOpen={isRehberModalOpen}
+        onClose={() => setIsRehberModalOpen(false)}
+        onOpenZamModal={() => setIsZamModalOpen(true)}
       />
 
       {/* PWA Offline Connectivity Indicator */}

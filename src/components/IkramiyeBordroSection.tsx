@@ -11,7 +11,8 @@ import {
   Percent,
   Trash2,
   HelpCircle,
-  FileSpreadsheet
+  FileSpreadsheet,
+  BookOpen
 } from 'lucide-react';
 import { BordroData, IkramiyeData, IkramiyeType } from '../types';
 import { formatCurrency, calculateIkramiyeTotals } from '../utils/bordroEngine';
@@ -25,6 +26,7 @@ interface IkramiyeBordroSectionProps {
   onRestoreDefaultIkramiye: (type?: IkramiyeType) => void;
   onSyncSaatUcretiFromBordro?: () => void;
   onOpenZamModal: () => void;
+  onOpenRehberModal?: () => void;
   onSwitchToMaas: () => void;
 }
 
@@ -38,6 +40,7 @@ export const IkramiyeBordroSection: React.FC<IkramiyeBordroSectionProps> = ({
   onRestoreDefaultIkramiye,
   onSyncSaatUcretiFromBordro,
   onOpenZamModal,
+  onOpenRehberModal,
   onSwitchToMaas
 }) => {
   const {
@@ -207,6 +210,19 @@ export const IkramiyeBordroSection: React.FC<IkramiyeBordroSectionProps> = ({
               <FileDown className="w-4 h-4 text-amber-100 shrink-0" />
               <span>PDF Olarak İndir</span>
             </button>
+
+            {/* Rehber Butonu */}
+            {onOpenRehberModal && (
+              <button
+                type="button"
+                onClick={onOpenRehberModal}
+                className="px-2.5 sm:px-3 py-1.5 bg-sky-100 hover:bg-sky-200 text-sky-900 rounded-xl text-xs font-bold flex items-center gap-1 transition cursor-pointer shadow-xs border border-sky-300"
+                title="Kullanım Kılavuzu, Düğmeler, Zam ve Statü Rehberi"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-sky-700" />
+                <span>Rehber</span>
+              </button>
+            )}
 
             {/* Maaş Bordrosuna Dön */}
             <button

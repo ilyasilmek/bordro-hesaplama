@@ -8,7 +8,8 @@ import {
   Award,
   User,
   Accessibility,
-  Check
+  Check,
+  BookOpen
 } from 'lucide-react';
 import { BordroData } from '../types';
 import { MONTHS_TABLE } from '../utils/bordroEngine';
@@ -24,6 +25,7 @@ interface HeaderControlsProps {
   onOpenZamModal: () => void;
   onOpenReportModal?: () => void;
   onOpenSavedModal?: () => void;
+  onOpenRehberModal?: () => void;
   onExportJSON: () => void;
   onImportJSON: () => void;
 }
@@ -36,6 +38,7 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
   onRecalculate,
   onOpenZamModal,
   onOpenSavedModal,
+  onOpenRehberModal,
   onExportJSON,
   onImportJSON
 }) => {
@@ -255,6 +258,19 @@ export const HeaderControls: React.FC<HeaderControlsProps> = ({
             <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
             <span>Sıfırla</span>
           </button>
+
+          {onOpenRehberModal && (
+            <button
+              id="btn-open-rehber-controls"
+              type="button"
+              onClick={onOpenRehberModal}
+              className="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border-2 border-sky-300 hover:border-sky-400 text-xs font-bold rounded-lg shadow-xs transition flex items-center gap-1 cursor-pointer"
+              title="Kullanım Kılavuzu, Düğmeler, Zam ve Statü Rehberi"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-sky-700" />
+              <span>Rehber</span>
+            </button>
+          )}
 
           <PWAInstallButton />
         </div>
